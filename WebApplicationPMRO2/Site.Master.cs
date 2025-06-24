@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using WebApplicationPMRO2.Utilities;
 
 namespace WebApplicationPMRO2
 {
@@ -11,7 +12,11 @@ namespace WebApplicationPMRO2
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            if (Funciones.SesionIniciada() == false)
+            {
+                System.Web.Security.FormsAuthentication.RedirectToLoginPage();
+                return;
+            }
         }
     }
 }

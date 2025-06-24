@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.Security;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using WebApplicationPMRO2.Utilities; 
 
 namespace WebApplicationPMRO2.Pages
 {
@@ -17,11 +19,51 @@ namespace WebApplicationPMRO2.Pages
 
         protected void btnLogin_Click(object sender, EventArgs e)
         {
-            string numero = txtNumeroEmpleado.Text.Trim();
-            string password = txtPassword.Text;
 
-            // TODO: sustituye por tu propio repositorio/servicio de usuarios
-            
+            try
+            {
+                string numero = txtNumeroEmpleado.Text.Trim();
+                string password = txtPassword.Text;
+
+                using (SqlDataReader reader = Funciones.ExecuteReader("[Administracion].[SP_Gestion_Usuarios]", new[] { "@numeroEmpleado", "@Contrasena", "@TransactionCode" }, new[] { numero,password, "S" }))
+                {
+                    if (reader.Read())
+                    {
+                        if (reader["NumeroEmpleado"].ToString() == numero && reader["Contrasena"].ToString() == password)
+                        {
+                            
+                            Session["Username"] = reader["nombreEmpleado"].ToString() ?? string.Empty;
+                            Session["EmployeeNumber"] = reader["numeroEmpleado"].ToString();
+
+                            System.Web.Security.FormsAuthentication.RedirectFromLoginPage(Session["EmployeeNumber"].ToString(), false);
+                        }
+                        else
+                        {
+                            // Aquí puedes manejar el caso de error, como mostrar un mensaje de error
+                            //JS.Show("Credenciales inválidas", "danger", "bottom-0 end-0");
+
+                            Funciones.MostrarToast("Usuario Invalido", "danger", "bottom-0 end-0", 3000);
+
+                           // Console.WriteLine("Credenciales inválidas");
+                        }
+
+                    }
+                    else
+                    {
+                        //JS.Show("Credenciales inválidas", "danger", "bottom-0 end-0");
+                        Funciones.MostrarToast("Usuario Invalido", "danger", "bottom-0 end-0", 3000);
+                        //Console.WriteLine("Credenciales inválidas");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Manejo de excepciones, como mostrar un mensaje de error
+                Funciones.MostrarToast($"Error al validar usuario: {ex.Message}", "danger", "bottom-0 end-0", 5000);
+                //Console.WriteLine($"Error al validar usuario: {ex.Message}");
+                //JS.Show($"Error al validar usuario: {ex.Message}", "danger", "bottom-0 end-0");
+            }
+
 
         }
     }
