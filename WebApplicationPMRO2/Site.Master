@@ -1,0 +1,183 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="WebApplicationPMRO2.SiteMaster" %>
+
+<!DOCTYPE html>
+<html lang="es">
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%: Page.Title %> - MRO</title>
+
+    <!-- Modernizr / bundles -->
+    <asp:PlaceHolder runat="server">
+        <%: Scripts.Render("~/bundles/modernizr") %>
+    </asp:PlaceHolder>
+
+    <!-- Bootstrap CSS -->
+    <webopt:bundlereference runat="server" path="~/Content/css" />
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+
+    <style>
+        html, body, form { height: 100%; }
+        /* Sidebar ocupa toda la altura */
+        .sidebar {
+            width: 250px;
+            height: 100vh;      /* alto completo */
+            position: sticky;
+            top: 0;
+        }
+        /* Suaviza animación horizontal */
+        .collapse-horizontal:not(.show) { width: 0 !important; }
+
+        /* Hace que la lista aparezca pegada al borde del sidebar */
+.sidebar .dropdown-menu {
+  margin-left: .25rem;      /* pequeño espacio opcional   */
+  border-radius: .375rem;   /* mismo look que el sidebar  */
+}
+
+
+    </style>
+</head>
+<body class="m-0">
+    <!-- formulario maestro -->
+    <form runat="server" class="d-flex min-vh-100">
+
+        <!-- ========= Scripts .NET ========= -->
+        <asp:ScriptManager runat="server">
+            <Scripts>
+                <asp:ScriptReference Name="MsAjaxBundle" />
+                <asp:ScriptReference Name="jquery" />
+                <asp:ScriptReference Name="WebFormsBundle" />
+            </Scripts>
+        </asp:ScriptManager>
+
+        <!-- ===== ① SIDEBAR ===== -->
+<div class="collapse collapse-horizontal show sidebar bg-light border-end" id="sidebarMenu">
+  <nav class="nav flex-column gap-1 pt-3">
+
+    <a href="/Default.aspx" class="nav-link px-3 d-flex gap-2 align-items-center">
+      <i class="bi bi-house-door"></i> Home
+    </a>
+
+    <!-- Botones abren off-canvas -->
+    <button type="button" class="btn nav-link px-3 d-flex gap-2"
+            data-bs-toggle="offcanvas" data-bs-target="#offMantenimiento">
+      <i class="bi bi-wrench-adjustable"></i> Mantenimiento
+    </button>
+
+    <button type="button" class="btn nav-link px-3 d-flex gap-2"
+            data-bs-toggle="offcanvas" data-bs-target="#offReportes">
+      <i class="bi bi-bar-chart"></i> Reportes
+    </button>
+
+    <button type="button" class="btn nav-link px-3 d-flex gap-2"
+            data-bs-toggle="offcanvas" data-bs-target="#offInventario">
+      <i class="bi bi-box-seam"></i> Inventario
+    </button>
+
+    <a href="/About.aspx" class="nav-link px-3 d-flex gap-2 align-items-center">
+      <i class="bi bi-cloud"></i> Weather
+    </a>
+  </nav>
+</div>
+
+<!-- ===== Off-canvas MANTENIMIENTO ===== -->
+<div class="offcanvas offcanvas-start offcanvas-side" tabindex="-1" id="offMantenimiento">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title">Mantenimiento</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+  </div>
+  <div class="offcanvas-body p-0">
+    <nav class="nav flex-column">
+      <a class="nav-link px-3 py-2" href="/Contact.aspx">
+        <i class="bi bi-table me-1"></i> Órdenes
+      </a>
+      <a class="nav-link px-3 py-2" href="~/Pages/Historial.aspx">
+        <i class="bi bi-clock-history me-1"></i> Historial
+      </a>
+      <a class="nav-link px-3 py-2" href="~/Pages/Preventivo.aspx">
+        <i class="bi bi-tools me-1"></i> Preventivo
+      </a>
+    </nav>
+  </div>
+</div>
+
+<!-- ===== Off-canvas REPORTES ===== -->
+<div class="offcanvas offcanvas-start offcanvas-side" tabindex="-1" id="offReportes">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title">Reportes</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+  </div>
+  <div class="offcanvas-body p-0">
+    <nav class="nav flex-column">
+      <a class="nav-link px-3 py-2" href="~/Pages/ReporteDiario.aspx">
+        <i class="bi bi-file-earmark-text me-1"></i> Diario
+      </a>
+      <a class="nav-link px-3 py-2" href="~/Pages/ReporteMensual.aspx">
+        <i class="bi bi-calendar3 me-1"></i> Mensual
+      </a>
+    </nav>
+  </div>
+</div>
+
+<!-- ===== Off-canvas INVENTARIO ===== -->
+<div class="offcanvas offcanvas-start offcanvas-side" tabindex="-1" id="offInventario">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title">Inventario</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+  </div>
+  <div class="offcanvas-body p-0">
+    <nav class="nav flex-column">
+      <a class="nav-link px-3 py-2" href="~/Pages/Productos.aspx">
+        <i class="bi bi-layers me-1"></i> Productos
+      </a>
+      <a class="nav-link px-3 py-2" href="~/Pages/Proveedores.aspx">
+        <i class="bi bi-truck me-1"></i> Proveedores
+      </a>
+    </nav>
+  </div>
+</div>
+
+
+        <!-- ========= ② CONTENIDO PRINCIPAL ========= -->
+        <div class="flex-grow-1 d-flex flex-column">
+            <!-- Barra superior -->
+            <header class="d-flex align-items-center gap-2 border-bottom bg-white shadow-sm px-3 py-2">
+                <button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-expanded="true" aria-controls="sidebarMenu" id="sidebarToggle">
+                    <i class="bi bi-chevron-left" id="icon-close"></i>
+                    <i class="bi bi-chevron-right d-none" id="icon-open"></i>
+                </button>
+                <div class="flex-grow-1"></div>
+                <a class="btn btn-link text-decoration-none" href="https://learn.microsoft.com/aspnet/core/" target="_blank">MRO</a>
+            </header>
+
+            <main class="p-4 flex-grow-1">
+                <asp:ContentPlaceHolder ID="MainContent" runat="server" />
+            </main>
+        </div>
+    </form>
+
+    <!-- Bootstrap JS -->
+    <asp:PlaceHolder runat="server">
+        <%: Scripts.Render("~/Scripts/bootstrap.js") %>
+    </asp:PlaceHolder>
+
+    <!-- Toggle icon script -->
+    <script>
+        (function () {
+            const sidebar = document.getElementById('sidebarMenu');
+            const iconOpen = document.getElementById('icon-open');
+            const iconClose = document.getElementById('icon-close');
+            sidebar.addEventListener('shown.bs.collapse', () => {
+                iconOpen.classList.add('d-none');
+                iconClose.classList.remove('d-none');
+            });
+            sidebar.addEventListener('hidden.bs.collapse', () => {
+                iconOpen.classList.remove('d-none');
+                iconClose.classList.add('d-none');
+            });
+        })();
+    </script>
+</body>
+</html>
