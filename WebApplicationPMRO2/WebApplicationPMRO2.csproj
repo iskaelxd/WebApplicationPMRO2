@@ -124,6 +124,15 @@
     <Content Include="Default.aspx" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
+    <Content Include="Pages\Administracion\GestionarModulos.aspx" />
+    <Content Include="Pages\Administracion\GestionarRoles.aspx" />
+    <Content Include="Pages\Administracion\GestionMenu.aspx" />
+    <Content Include="Pages\Administracion\GestionUsuarios.aspx" />
+    <Content Include="Pages\Administracion\PermisoMenu.aspx" />
+    <Content Include="Pages\Almacen\Inventario.aspx" />
+    <Content Include="Pages\Almacen\Recepciones.aspx" />
+    <Content Include="Pages\Compras\OrdenesCompra.aspx" />
+    <Content Include="Pages\Compras\Proveedores.aspx" />
     <Content Include="Pages\Login.aspx" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
@@ -213,6 +222,70 @@
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Models\MenuItemBD.cs" />
+    <Compile Include="Pages\Administracion\GestionarModulos.aspx.cs">
+      <DependentUpon>GestionarModulos.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Administracion\GestionarModulos.aspx.designer.cs">
+      <DependentUpon>GestionarModulos.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Administracion\GestionarRoles.aspx.cs">
+      <DependentUpon>GestionarRoles.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Administracion\GestionarRoles.aspx.designer.cs">
+      <DependentUpon>GestionarRoles.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Administracion\GestionMenu.aspx.cs">
+      <DependentUpon>GestionMenu.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Administracion\GestionMenu.aspx.designer.cs">
+      <DependentUpon>GestionMenu.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Administracion\GestionUsuarios.aspx.cs">
+      <DependentUpon>GestionUsuarios.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Administracion\GestionUsuarios.aspx.designer.cs">
+      <DependentUpon>GestionUsuarios.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Administracion\PermisoMenu.aspx.cs">
+      <DependentUpon>PermisoMenu.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Administracion\PermisoMenu.aspx.designer.cs">
+      <DependentUpon>PermisoMenu.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Almacen\Inventario.aspx.cs">
+      <DependentUpon>Inventario.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Almacen\Inventario.aspx.designer.cs">
+      <DependentUpon>Inventario.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Almacen\Recepciones.aspx.cs">
+      <DependentUpon>Recepciones.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Almacen\Recepciones.aspx.designer.cs">
+      <DependentUpon>Recepciones.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Compras\OrdenesCompra.aspx.cs">
+      <DependentUpon>OrdenesCompra.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Compras\OrdenesCompra.aspx.designer.cs">
+      <DependentUpon>OrdenesCompra.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Compras\Proveedores.aspx.cs">
+      <DependentUpon>Proveedores.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Compras\Proveedores.aspx.designer.cs">
+      <DependentUpon>Proveedores.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pages\Login.aspx.cs">
       <DependentUpon>Login.aspx</DependentUpon>

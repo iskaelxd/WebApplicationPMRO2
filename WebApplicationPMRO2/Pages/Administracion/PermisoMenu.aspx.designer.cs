@@ -7,11 +7,11 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WebApplicationPMRO2
+namespace WebApplicationPMRO2.Pages.Administracion
 {
 
 
-    public partial class _Default
+    public partial class PermisoMenu
     {
     }
 }

@@ -37,6 +37,7 @@
 }
 
 
+
     </style>
 </head>
 <body class="m-0">
@@ -53,20 +54,27 @@
         </asp:ScriptManager>
 
         <!-- ===== ① SIDEBAR ===== -->
-<div class="collapse collapse-horizontal show sidebar bg-light border-end" id="sidebarMenu">
+<div class="collapse collapse-horizontal show sidebar bg-light border-end" id="sidebarMenu" >
   <nav class="nav flex-column gap-1 pt-3">
 
-    <a href="/Default.aspx" class="nav-link px-3 d-flex gap-2 align-items-center">
+      <ul>
+      <asp:PlaceHolder ID="phMenuItems" runat="server" />
+</ul>
+    <!--<a href="/Default.aspx" class="nav-link px-3 d-flex gap-2 align-items-center">
       <i class="bi bi-house-door"></i> Home
-    </a>
+    </a>-->
+
+   <!--<a href="/Default.aspx" class="nav-link px-3 d-flex gap-2 align-items-center">
+   <i class="bi bi-person-add"></i> Gestionar Usuario
+    </a>-->
 
     <!-- Botones abren off-canvas -->
-    <button type="button" class="btn nav-link px-3 d-flex gap-2"
+    <!--<button type="button" class="btn nav-link px-3 d-flex gap-2"
             data-bs-toggle="offcanvas" data-bs-target="#offMantenimiento">
       <i class="bi bi-wrench-adjustable"></i> Mantenimiento
-    </button>
+    </button>-->
 
-    <button type="button" class="btn nav-link px-3 d-flex gap-2"
+  <!--  <button type="button" class="btn nav-link px-3 d-flex gap-2"
             data-bs-toggle="offcanvas" data-bs-target="#offReportes">
       <i class="bi bi-bar-chart"></i> Reportes
     </button>
@@ -74,16 +82,17 @@
     <button type="button" class="btn nav-link px-3 d-flex gap-2"
             data-bs-toggle="offcanvas" data-bs-target="#offInventario">
       <i class="bi bi-box-seam"></i> Inventario
-    </button>
+    </button>-->
 
-    <a href="/About.aspx" class="nav-link px-3 d-flex gap-2 align-items-center">
+   <!-- <a href="/About.aspx" class="nav-link px-3 d-flex gap-2 align-items-center">
       <i class="bi bi-cloud"></i> Weather
-    </a>
+    </a>-->
+
   </nav>
 </div>
 
 <!-- ===== Off-canvas MANTENIMIENTO ===== -->
-<div class="offcanvas offcanvas-start offcanvas-side" tabindex="-1" id="offMantenimiento">
+<!--<div class="offcanvas offcanvas-start offcanvas-side" tabindex="-1" id="offMantenimiento">
   <div class="offcanvas-header">
     <h5 class="offcanvas-title">Mantenimiento</h5>
     <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
@@ -101,10 +110,10 @@
       </a>
     </nav>
   </div>
-</div>
+</div>-->
 
 <!-- ===== Off-canvas REPORTES ===== -->
-<div class="offcanvas offcanvas-start offcanvas-side" tabindex="-1" id="offReportes">
+<!--<div class="offcanvas offcanvas-start offcanvas-side" tabindex="-1" id="offReportes">
   <div class="offcanvas-header">
     <h5 class="offcanvas-title">Reportes</h5>
     <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
@@ -119,10 +128,10 @@
       </a>
     </nav>
   </div>
-</div>
+</div>-->
 
 <!-- ===== Off-canvas INVENTARIO ===== -->
-<div class="offcanvas offcanvas-start offcanvas-side" tabindex="-1" id="offInventario">
+<!--<div class="offcanvas offcanvas-start offcanvas-side" tabindex="-1" id="offInventario">
   <div class="offcanvas-header">
     <h5 class="offcanvas-title">Inventario</h5>
     <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
@@ -137,7 +146,7 @@
       </a>
     </nav>
   </div>
-</div>
+</div>-->
 
 
         <!-- ========= ② CONTENIDO PRINCIPAL ========= -->

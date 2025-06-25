@@ -14,7 +14,7 @@ namespace WebApplicationPMRO2.Pages
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
+           
         }
 
         protected void btnLogin_Click(object sender, EventArgs e)
@@ -25,6 +25,13 @@ namespace WebApplicationPMRO2.Pages
                 string numero = txtNumeroEmpleado.Text.Trim();
                 string password = txtPassword.Text;
 
+                if(string.IsNullOrEmpty(numero) || string.IsNullOrEmpty(password))
+                {
+                    // Aquí puedes manejar el caso de error, como mostrar un mensaje de error
+                    Funciones.MostrarToast("Por favor, ingrese número de empleado y contraseña.", "danger", "bottom-0 end-0", 3000);
+                    return;
+                }
+
                 using (SqlDataReader reader = Funciones.ExecuteReader("[Administracion].[SP_Gestion_Usuarios]", new[] { "@numeroEmpleado", "@Contrasena", "@TransactionCode" }, new[] { numero,password, "S" }))
                 {
                     if (reader.Read())
@@ -34,6 +41,7 @@ namespace WebApplicationPMRO2.Pages
                             
                             Session["Username"] = reader["nombreEmpleado"].ToString() ?? string.Empty;
                             Session["EmployeeNumber"] = reader["numeroEmpleado"].ToString();
+                            Session["Rol"] = reader["RolId"].ToString() ?? string.Empty;
 
                             System.Web.Security.FormsAuthentication.RedirectFromLoginPage(Session["EmployeeNumber"].ToString(), false);
                         }
