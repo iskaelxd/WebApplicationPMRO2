@@ -6,6 +6,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Configuration;
 using System.Web.UI;
+using System.Web.UI.WebControls;
 
 
 namespace WebApplicationPMRO2.Utilities
@@ -60,10 +61,58 @@ namespace WebApplicationPMRO2.Utilities
             }
         }
 
+    public static void LlenarDropDownList(
+    DropDownList ddl,
+    string storedProcedure,
+    string[] parametros,
+    string[] valores,
+    string textoDefault,
+    string valorDefault,
+    string campoTexto,
+    string campoValor)
+        {
+            DataTable dt = new DataTable();
+
+            // Agregar columnas dinámicamente si no existen
+            dt.Columns.Add(campoValor);
+            dt.Columns.Add(campoTexto);
+
+            // Fila por defecto
+            DataRow defaultRow = dt.NewRow();
+            defaultRow[campoValor] = valorDefault;
+            defaultRow[campoTexto] = textoDefault;
+            dt.Rows.Add(defaultRow);
+
+            using (SqlDataReader reader = ExecuteReader(storedProcedure, parametros, valores))
+            {
+                if (reader == null)
+                {
+                    MostrarToast("Error al obtener la información.", "danger", "top-0 end-0", 3000);
+                    ddl.DataSource = dt;
+                    ddl.DataTextField = campoTexto;
+                    ddl.DataValueField = campoValor;
+                    ddl.DataBind();
+                    return;
+                }
+
+                while (reader.Read())
+                {
+                    DataRow row = dt.NewRow();
+                    row[campoValor] = reader[campoValor].ToString();
+                    row[campoTexto] = reader[campoTexto].ToString();
+                    dt.Rows.Add(row);
+                }
+            }
+
+            ddl.DataSource = dt;
+            ddl.DataTextField = campoTexto;
+            ddl.DataValueField = campoValor;
+            ddl.DataBind();
+        }
 
 
-        
-            public static void MostrarToast(string mensaje, string nivel = "success", string posicion = "top-0 end-0", int delay = 4000)
+
+        public static void MostrarToast(string mensaje, string nivel = "success", string posicion = "top-0 end-0", int delay = 4000)
             {
                 string script = $"mroShowToast('{mensaje}', '{nivel}', '{posicion}', {delay});";
 

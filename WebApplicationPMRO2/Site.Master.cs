@@ -25,6 +25,11 @@ namespace WebApplicationPMRO2
                 }
                 LoadMenu();
             }
+            else
+            {
+                LoadMenu();
+            }
+            
 
         }
 
@@ -40,7 +45,7 @@ namespace WebApplicationPMRO2
                 {
                     CssClass = "nav-link px-3 d-flex gap-2 align-items-center",
                     NavigateUrl = item.Url,
-                    Text = $"<i class='{item.Icono}'></i> {item.Titulo}",
+                    Text = $"<i class='{item.Icono}'></i> <span>{item.Titulo}</span>",
                     ID = "menu_" + item.MenuId
                 };
                 phMenuItems.Controls.Add(link);

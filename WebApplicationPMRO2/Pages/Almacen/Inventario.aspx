@@ -4,7 +4,8 @@
 
     
 
-       <h1>Inventario</h1>
-    
-
+       <h3>Inventario</h3>
+        
+ 
+    <hr />
 </asp:Content>
