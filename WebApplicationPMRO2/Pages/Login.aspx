@@ -44,10 +44,10 @@
                     <!-- Nº Empleado -->
                     <div class="mb-3">
                         <label for="<%= txtNumeroEmpleado.ClientID %>" class="form-label">
-                            Número de Empleado
+                            GlobalId
                         </label>
                         <asp:TextBox ID="txtNumeroEmpleado" runat="server"
-                                     CssClass="form-control" placeholder="Número Empleado" />
+                                     CssClass="form-control" placeholder="GlobalId" />
                         <asp:RequiredFieldValidator ID="rfvNumEmpleado" runat="server"
                                      ControlToValidate="txtNumeroEmpleado"
                                      ErrorMessage="Requerido" CssClass="text-danger"
@@ -69,9 +69,11 @@
 
                     <!-- Botón -->
                     <asp:Button ID="btnLogin" runat="server"
-                                Text="Iniciar Sesión"
-                                CssClass="btn btn-primary w-100"
-                                OnClick="btnLogin_Click" />
+                    Text="Iniciar Sesión"
+                    CssClass="btn btn-primary w-100"
+                    OnClick="btnLogin_Click"
+                    UseSubmitBehavior="false" />
+
 
                 </ContentTemplate>
             </asp:UpdatePanel>
@@ -83,6 +85,36 @@
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script type="text/javascript">
+        function setupLoginButton() {
+            const loginButton = document.getElementById("<%= btnLogin.ClientID %>");
+            const form = document.getElementById("form1");
+
+            if (!loginButton) return;
+
+            loginButton.addEventListener("click", function () {
+                loginButton.disabled = true;
+                loginButton.value = "Cargando...";
+            });
+
+            form.addEventListener("keypress", function (e) {
+                if (e.key === "Enter") {
+                    e.preventDefault();
+                    loginButton.click();
+                }
+            });
+        }
+
+        // Ejecutar al cargar la página
+        document.addEventListener("DOMContentLoaded", setupLoginButton);
+
+        // Volver a enlazar después de cada postback parcial
+        Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
+            setupLoginButton();
+        });
+    </script>
+
   
 
 </body>

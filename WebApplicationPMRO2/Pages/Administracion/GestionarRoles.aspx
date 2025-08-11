@@ -20,7 +20,7 @@
     </button>
     </div>
     <div class="col-4">
-    <asp:DropDownList ID="ddlModulo" runat="server" CssClass="form-select"></asp:DropDownList>
+    <asp:DropDownList ID="ddlModulo" runat="server" CssClass="form-select" OnSelectedIndexChanged="ModuloSeletect_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
         </div>
     </div>
 
@@ -46,38 +46,75 @@
         </div>
         </div>
 
-        <%--Tabla de roles--%>
+        <!--Tabla de roles-->
 
-        <table class="table table-sm table-bordered mt-5">
-            <thead>
-            <tr>
-              <th scope="col">IdRol</th>
-              <th scope="col">Modulo</th>
-              <th scope="col">Rol</th>
-              <th scope="col">Acciones</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-              <th scope="row">1</th>
-              <td>Almacenista</td>
-              <td>almacen</td>
-              <td>ACCIONES</td>
-            </tr>
-            <tr>
-              <th scope="row">2</th>
-              <td>Comprador</td>
-              <td>Compras</td>
-              <td>ACCIONES</td>
-            </tr>
-            <tr>
-              <th scope="row">3</th>
-              <td>Administrador</td>
-              <td>Admonistrador</td>
-              <td>ACCIONES</td>
-            </tr>
-            </tbody>
-          </table>
+
+    <asp:GridView ID="tblRol" runat="server" OnRowCommand="tblRol_RowCommand"  CssClass="table table-sm table-bordered mt-5"
+    AutoGenerateColumns="False" GridLines="None" EmptyDataText="No hay módulos registrados.">
+    <Columns>
+        <asp:BoundField DataField="IdRol" HeaderText="IdRol" SortExpression="IdRol" />
+        <asp:BoundField DataField="NombreRol" HeaderText="Nombre Rol" SortExpression="NombreRol"/>
+        <asp:BoundField DataField="NombreModulo" HeaderText="Nombre Módulo" SortExpression="NombreModulo" />
+        <asp:TemplateField HeaderText="Acciones">
+            <ItemTemplate>
+                <div class="d-flex justify-content-center">
+                <!-- Aquí puedes poner botones de acción -->
+                <asp:Button ID="btnEditar" runat="server" Text="Editar" CssClass="btn btn-sm btn-warning me-3" CommandName="Editar" CommandArgument='<%# Eval("IdRol") %>' />
+                <asp:Button ID="btnEliminar" runat="server" Text="Eliminar" CssClass="btn btn-sm btn-danger " CommandName="Eliminar" CommandArgument='<%# Eval("IdRol") %>' />
+                </div>
+            </ItemTemplate>
+        </asp:TemplateField>
+    </Columns>
+</asp:GridView>
+
+        <!--Modal de editar-->
+
+ <div class="modal fade" id="modalEditar" tabindex="-1" aria-labelledby="modalEditarLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="modalEditarLabel">Editar Rol</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <asp:HiddenField ID="hfIdRol" runat="server" />
+        <div class="mb-3">
+          <label for="txtEditarModulo" class="form-label">Selecciona un Modulo</label>
+          <asp:DropDownList ID="EditarModulo" runat="server" CssClass="form-select"></asp:DropDownList>
+        </div>
+        <div class="mb-3">
+          <label for="txtEditarCodigo" class="form-label">Nombre del Rol</label>
+          <asp:TextBox ID="txtEditarRol" runat="server" CssClass="form-control" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <asp:Button ID="btnActualizar" runat="server" Text="Actualizar" CssClass="btn btn-success" OnClick="btnActualizar_Click" />
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Salir</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+        <!--Modal de Confirmación de Eliminación-->
+
+ <div class="modal fade" id="modalEliminar" tabindex="-1" aria-labelledby="modalEliminarLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-3 shadow">
+      <div class="modal-body p-4 text-center">
+          <asp:HiddenField ID="hfIdRolE" runat="server" />
+        <h5 class="mb-0">¿Estás seguro de eliminar <asp:Literal ID="litNombreRolEliminar" runat="server" />?</h5>
+        <p class="mb-0">Una vez eliminado ya no lo podrás recuperar</p>
+      </div>
+      <div class="modal-footer flex-nowrap p-0">
+        <asp:Button ID="confirmDelete" runat="server" Text="Si, Eliminar" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0 border-end" OnClick="btnEliminar_Click"/>
+        <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0" data-bs-dismiss="modal">
+          No, gracias
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
     
     </ContentTemplate>
     </asp:UpdatePanel>

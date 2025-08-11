@@ -4,7 +4,8 @@
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
 
-       <h1>Recepciones</h1>
+       <h3>Recepciones</h3>
+    <hr />
 
 </asp:Content>
 

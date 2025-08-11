@@ -12,14 +12,19 @@
     
    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
     <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
 
         html, body {
-    height: 100%;
-    margin: 0;
-    overflow: hidden;
-}
+            height: 100%;
+            margin: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
 
 form {
     height: 100%;
@@ -144,7 +149,7 @@ form {
             </nav>
         </div>
 
-
+         
         <!-- Contenido principal -->
         <div class="flex-grow-1 d-flex flex-column">
             <header class="fixed-header">
@@ -154,7 +159,7 @@ form {
             </button>
 
             <div class="flex-grow-1"></div>
-            <a class="btn btn-link text-decoration-none" href="#">MRO</a>
+            <a class="btn btn-link text-decoration-none" href="/Pages/Login.aspx">MRO</a>
         </header>
 
 
@@ -167,8 +172,10 @@ form {
 
     <!-- Bootstrap 5 JS -->
     <script src="<%= ResolveUrl("~/Scripts/WebForms/alert.js") %>"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    
+   
+
 
 
     <!-- Script para alternar íconos -->
@@ -191,6 +198,9 @@ form {
                     iconOpen.classList.add('d-none');
                     iconClose.classList.remove('d-none');
                 }
+
+
+
             });
         })();
     </script>

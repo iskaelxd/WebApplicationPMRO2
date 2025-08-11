@@ -48,7 +48,7 @@ namespace WebApplicationPMRO2.Utilities
                 {
                     return false;
                 }
-                if (HttpContext.Current.Session["EmployeeNumber"] == null)
+                if (HttpContext.Current.Session["globalId"] == null)
                 {
                     return false;
                 }

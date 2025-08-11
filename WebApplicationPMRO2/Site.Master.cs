@@ -16,7 +16,7 @@ namespace WebApplicationPMRO2
         {
             if (!IsPostBack)
             {
-                
+
 
                 if (Funciones.SesionIniciada() == false)
                 {
@@ -29,7 +29,7 @@ namespace WebApplicationPMRO2
             {
                 LoadMenu();
             }
-            
+
 
         }
 
@@ -59,20 +59,14 @@ namespace WebApplicationPMRO2
         {
             List<MenuItemBD> items = new List<MenuItemBD>();
 
-            using (SqlDataReader reader = Funciones.ExecuteReader("[Administracion].[SP_MenuPermisos]", new[] { "@RolId", "@TransactionCode" }, new[] {rol,"S"} ))
+            using (SqlDataReader reader = Funciones.ExecuteReader("[Administracion].[SP_MenuPermisos]", new[] { "@UsuarioId", "@TransactionCode" }, new[] {rol,"S"} ))
 
             {
                 while (reader.Read()) 
                 {
                     items.Add(new MenuItemBD
                     {
-                       // RolId = reader.GetInt32(reader.GetOrdinal("RolId")),
                         MenuId = reader.GetInt32(reader.GetOrdinal("MenuId")),
-                        //PuedeVer = reader.GetInt32(reader.GetOrdinal("PuedeVer")),
-                        //PuedeCrear = reader.GetInt32(reader.GetOrdinal("PuedeCrear")),
-                       // PuedeEditar = reader.GetInt32(reader.GetOrdinal("PuedeEditar")),
-                       // PuedeEliminar = reader.GetInt32(reader.GetOrdinal("PuedeEliminar")),
-                       // ModuloId = reader.GetInt32(reader.GetOrdinal("ModuloId")),
                         Titulo = reader.GetString(reader.GetOrdinal("Titulo")),
                         Url = reader.GetString(reader.GetOrdinal("Url")),
                         Icono = reader.GetString(reader.GetOrdinal("Icono")),

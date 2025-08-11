@@ -16,7 +16,7 @@ namespace WebApplicationPMRO2.Pages.Administracion
         {
             if (!IsPostBack) 
             {
-                LoadData();
+               // LoadData();
             }
         }
 
@@ -203,14 +203,16 @@ namespace WebApplicationPMRO2.Pages.Administracion
             {
                 if (reader.Read() && reader["Resultado"].ToString() == "1")
                 {
+                  
+                    // Eliminación exitosa
+                    Funciones.MostrarToast("Módulo eliminado correctamente.", "success", "top-0 end-0", 3000);
+                    LoadData();
+
                     // Ocultar el modal
                     ScriptManager.RegisterStartupScript(this, GetType(), "ocultarModal", @"
                     $('#modalEliminar').modal('hide');
                     $('body').removeClass('modal-open');
                     $('.modal-backdrop').remove();", true);
-                    // Eliminación exitosa
-                    Funciones.MostrarToast("Módulo eliminado correctamente.", "success", "top-0 end-0", 3000);
-                    LoadData();
                 }
                 else
                 {

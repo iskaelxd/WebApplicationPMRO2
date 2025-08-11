@@ -120,20 +120,45 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
+    <Content Include="Content\content\bootstrap-grid.css" />
+    <Content Include="Content\content\bootstrap-grid.min.css" />
+    <Content Include="Content\content\bootstrap-grid.rtl.css" />
+    <Content Include="Content\content\bootstrap-grid.rtl.min.css" />
+    <Content Include="Content\content\bootstrap-reboot.css" />
+    <Content Include="Content\content\bootstrap-reboot.min.css" />
+    <Content Include="Content\content\bootstrap-reboot.rtl.css" />
+    <Content Include="Content\content\bootstrap-reboot.rtl.min.css" />
+    <Content Include="Content\content\bootstrap-utilities.css" />
+    <Content Include="Content\content\bootstrap-utilities.min.css" />
+    <Content Include="Content\content\bootstrap-utilities.rtl.css" />
+    <Content Include="Content\content\bootstrap-utilities.rtl.min.css" />
+    <Content Include="Content\content\bootstrap.css" />
+    <Content Include="Content\content\bootstrap.min.css" />
+    <Content Include="Content\content\bootstrap.rtl.css" />
+    <Content Include="Content\content\bootstrap.rtl.min.css" />
+    <Content Include="Content\content\Site.css" />
     <Content Include="Content\Site.css" />
     <Content Include="Default.aspx" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
+    <Content Include="Modelos3D\license.txt" />
     <Content Include="Pages\Administracion\GestionarModulos.aspx" />
     <Content Include="Pages\Administracion\GestionarRoles.aspx" />
     <Content Include="Pages\Administracion\GestionMenu.aspx" />
     <Content Include="Pages\Administracion\GestionUsuarios.aspx" />
     <Content Include="Pages\Administracion\PermisoMenu.aspx" />
+    <Content Include="Pages\Almacen\Dashboard.aspx" />
     <Content Include="Pages\Almacen\Inventario.aspx" />
+    <Content Include="Pages\Almacen\Movimientos.aspx" />
     <Content Include="Pages\Almacen\Recepciones.aspx" />
+    <Content Include="Pages\Almacen\Reportes.aspx" />
+    <Content Include="Pages\Almacen\Solicitudes.aspx" />
     <Content Include="Pages\Compras\OrdenesCompra.aspx" />
     <Content Include="Pages\Compras\Proveedores.aspx" />
     <Content Include="Pages\Login.aspx" />
+    <Content Include="Pages\Produccion\AddEmpleado.aspx" />
+    <Content Include="Pages\Produccion\CreateOrder.aspx" />
+    <Content Include="Pages\Produccion\Reports.aspx" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.esm.js" />
@@ -162,6 +187,24 @@
     <Content Include="Content\bootstrap-grid.rtl.css.map" />
     <Content Include="Content\bootstrap-grid.min.css.map" />
     <Content Include="Content\bootstrap-grid.css.map" />
+    <Content Include="Modelos3D\scene.bin" />
+    <Content Include="Modelos3D\scene.gltf" />
+    <Content Include="Content\content\bootstrap-grid.css.map" />
+    <Content Include="Content\content\bootstrap-grid.min.css.map" />
+    <Content Include="Content\content\bootstrap-grid.rtl.css.map" />
+    <Content Include="Content\content\bootstrap-grid.rtl.min.css.map" />
+    <Content Include="Content\content\bootstrap-reboot.css.map" />
+    <Content Include="Content\content\bootstrap-reboot.min.css.map" />
+    <Content Include="Content\content\bootstrap-reboot.rtl.css.map" />
+    <Content Include="Content\content\bootstrap-reboot.rtl.min.css.map" />
+    <Content Include="Content\content\bootstrap-utilities.css.map" />
+    <Content Include="Content\content\bootstrap-utilities.min.css.map" />
+    <Content Include="Content\content\bootstrap-utilities.rtl.css.map" />
+    <Content Include="Content\content\bootstrap-utilities.rtl.min.css.map" />
+    <Content Include="Content\content\bootstrap.css.map" />
+    <Content Include="Content\content\bootstrap.min.css.map" />
+    <Content Include="Content\content\bootstrap.rtl.css.map" />
+    <Content Include="Content\content\bootstrap.rtl.min.css.map" />
     <None Include="Scripts\jquery-3.7.0.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.0.js" />
     <Content Include="Scripts\jquery-3.7.0.min.js" />
@@ -220,6 +263,7 @@
     <Compile Include="Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
+    <Compile Include="FuncionesMes.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -259,6 +303,13 @@
     <Compile Include="Pages\Administracion\PermisoMenu.aspx.designer.cs">
       <DependentUpon>PermisoMenu.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Almacen\Dashboard.aspx.cs">
+      <DependentUpon>Dashboard.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Almacen\Dashboard.aspx.designer.cs">
+      <DependentUpon>Dashboard.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Almacen\Inventario.aspx.cs">
       <DependentUpon>Inventario.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -266,12 +317,33 @@
     <Compile Include="Pages\Almacen\Inventario.aspx.designer.cs">
       <DependentUpon>Inventario.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Almacen\Movimientos.aspx.cs">
+      <DependentUpon>Movimientos.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Almacen\Movimientos.aspx.designer.cs">
+      <DependentUpon>Movimientos.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Almacen\Recepciones.aspx.cs">
       <DependentUpon>Recepciones.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Pages\Almacen\Recepciones.aspx.designer.cs">
       <DependentUpon>Recepciones.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Almacen\Reportes.aspx.cs">
+      <DependentUpon>Reportes.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Almacen\Reportes.aspx.designer.cs">
+      <DependentUpon>Reportes.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Almacen\Solicitudes.aspx.cs">
+      <DependentUpon>Solicitudes.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Almacen\Solicitudes.aspx.designer.cs">
+      <DependentUpon>Solicitudes.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pages\Compras\OrdenesCompra.aspx.cs">
       <DependentUpon>OrdenesCompra.aspx</DependentUpon>
@@ -293,6 +365,28 @@
     </Compile>
     <Compile Include="Pages\Login.aspx.designer.cs">
       <DependentUpon>Login.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Produccion\AddEmpleado.aspx.cs">
+      <DependentUpon>AddEmpleado.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Produccion\AddEmpleado.aspx.designer.cs">
+      <DependentUpon>AddEmpleado.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Produccion\CreateOrder.aspx.cs">
+      <DependentUpon>CreateOrder.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Produccion\CreateOrder.aspx.designer.cs">
+      <DependentUpon>CreateOrder.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Produccion\Indirecto.cs" />
+    <Compile Include="Pages\Produccion\Reports.aspx.cs">
+      <DependentUpon>Reports.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Produccion\Reports.aspx.designer.cs">
+      <DependentUpon>Reports.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Site.Master.cs">
