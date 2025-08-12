@@ -19,9 +19,7 @@ namespace WebApplicationPMRO2.Pages.Administracion
             if (!IsPostBack) 
             {
                
-                //LoadDropdown();
-                //LoadDropdownAdd();
-                //LoadData();
+                LoadData();
             }
         }
 
@@ -31,30 +29,22 @@ namespace WebApplicationPMRO2.Pages.Administracion
             {
                 DataTable dt = new DataTable();
                 dt.Columns.Add("MenuId", typeof(int));
-                dt.Columns.Add("ModuloNombre", typeof(string));
                 dt.Columns.Add("Titulo", typeof(string));
                 dt.Columns.Add("Url", typeof(string));
                 dt.Columns.Add("Icono", typeof(string));
                 dt.Columns.Add("Orden", typeof(int));
-                dt.Columns.Add("ModuloId", typeof(int));
-                string moduleId = ddlModulo.SelectedValue;
-                if (moduleId == "0")
-                {
-                    moduleId = null; // Si no se selecciona un módulo, no filtrar por módulo
-                }
 
-                using (SqlDataReader reader = Funciones.ExecuteReader("[Administracion].[SP_GestionMenu]", new[] { "@TransactionCode", "@ModuloId" }, new[] {"S",moduleId})) 
+
+                using (SqlDataReader reader = Funciones.ExecuteReader("[Administracion].[SP_GestionMenu]", new[] { "@TransactionCode"}, new[] {"S"})) 
                 {
                     while (reader.Read())
                     {
                         DataRow row = dt.NewRow();
                         row["MenuId"] = reader["MenuId"];
-                        row["ModuloNombre"] = reader["ModuloNombre"];
                         row["Titulo"] = reader["Titulo"];
                         row["Url"] = reader["Url"];
                         row["Icono"] = reader["Icono"];
                         row["Orden"] = reader["Orden"];
-                        row["ModuloId"] = reader["ModuloId"];
                         dt.Rows.Add(row);
                     }
                     tblMenu.DataSource = dt;
@@ -71,33 +61,7 @@ namespace WebApplicationPMRO2.Pages.Administracion
             }
         }
 
-        protected void LoadDropdown()
-        {
-            Funciones.LlenarDropDownList(
-           ddlModulo,
-               "[Administracion].[SP_ModulosRoles]",
-               new[] { "@TransactionCode" },
-               new[] { "SM" },
-               "Seleccione un Módulo",
-               "0",
-               "Nombre",
-               "Id"
-           );
-        }
 
-        protected void LoadDropdownAdd()
-        {
-            Funciones.LlenarDropDownList(
-           ddlMenu,
-               "[Administracion].[SP_ModulosRoles]",
-               new[] { "@TransactionCode" },
-               new[] { "SM" },
-               "Seleccione un Módulo",
-               "0",
-               "Nombre",
-               "Id"
-           );
-        }
 
         protected void MenuSelected_SelectedIndexChanged (object sender, EventArgs e)
         {
@@ -130,7 +94,6 @@ namespace WebApplicationPMRO2.Pages.Administracion
                     txtUrl.Text = row["Url"].ToString();
                     txtIcono.Text = row["Icono"].ToString();
                     txtOrden.Text = row["Orden"].ToString();
-                    ddlMenu.SelectedValue = row["ModuloId"].ToString();
                     txtMenuId.Text = row["MenuId"].ToString(); // Asigna el ID del menú al campo oculto
                     mvwContainer.SetActiveView(viewRecord);
                     btnGuardar.Text = "Actualizar"; // Cambia el texto del botón a "Actualizar"
@@ -162,7 +125,7 @@ namespace WebApplicationPMRO2.Pages.Administracion
 
         protected void btnGuardar_Click(object sender, EventArgs e)
         { 
-           if(string.IsNullOrEmpty(txtTitulo.Text) || string.IsNullOrEmpty(txtUrl.Text) || string.IsNullOrEmpty(txtIcono.Text) ||string.IsNullOrEmpty(txtOrden.Text) ||ddlMenu.SelectedValue == "0")
+           if(string.IsNullOrEmpty(txtTitulo.Text) || string.IsNullOrEmpty(txtUrl.Text) || string.IsNullOrEmpty(txtIcono.Text) ||string.IsNullOrEmpty(txtOrden.Text))
             {
                 Funciones.MostrarToast("Por favor, complete todos los campos obligatorios.", "warning", "top-0 end-0", 3000);
                 return;
@@ -176,12 +139,11 @@ namespace WebApplicationPMRO2.Pages.Administracion
             
             try
             {
-              using (SqlDataReader reader = Funciones.ExecuteReader("[Administracion].[SP_GestionMenu]", new[] {"@ModuloId","@Titulo","@Url","@Icono","@Orden","@TransactionCode" }, new[] {ddlMenu.SelectedValue,txtTitulo.Text,txtUrl.Text, txtIcono.Text,txtOrden.Text,"I"}  ))
+              using (SqlDataReader reader = Funciones.ExecuteReader("[Administracion].[SP_GestionMenu]", new[] {"@Titulo","@Url","@Icono","@Orden","@TransactionCode" }, new[] {txtTitulo.Text,txtUrl.Text, txtIcono.Text,txtOrden.Text,"I"}  ))
                 {
                     if (reader.Read() && reader["Resultado"].ToString() == "1") {
 
                         Funciones.MostrarToast("Menu Agregado correctamente.", "success", "top-0 end-0", 3000);
-                        ddlMenu.SelectedValue = "0"; // Resetea el dropdown
                         txtTitulo.Text = string.Empty; // Resetea el campo de título
                         txtUrl.Text = string.Empty; // Resetea el campo de URL
                         txtIcono.Text = string.Empty; // Resetea el campo de icono
@@ -205,7 +167,7 @@ namespace WebApplicationPMRO2.Pages.Administracion
         {
             try
             {
-                using (SqlDataReader reader = Funciones.ExecuteReader("[Administracion].[SP_GestionMenu]", new[] { "@MenuId", "@ModuloId", "@Titulo", "@Url", "@Icono", "@Orden", "@TransactionCode" }, new[] { txtMenuId.Text, ddlMenu.SelectedValue, txtTitulo.Text, txtUrl.Text, txtIcono.Text, txtOrden.Text, "U" }))
+                using (SqlDataReader reader = Funciones.ExecuteReader("[Administracion].[SP_GestionMenu]", new[] { "@MenuId", "@Titulo", "@Url", "@Icono", "@Orden", "@TransactionCode" }, new[] { txtMenuId.Text, txtTitulo.Text, txtUrl.Text, txtIcono.Text, txtOrden.Text, "U" }))
                 {
                     if (reader.Read() && reader["Resultado"].ToString() == "1")
                     {
@@ -235,7 +197,6 @@ namespace WebApplicationPMRO2.Pages.Administracion
             txtUrl.Text = string.Empty;
             txtIcono.Text = string.Empty;
             txtOrden.Text = string.Empty;
-            ddlMenu.SelectedValue = "0"; // Resetea el dropdown
             txtMenuId.Text = string.Empty; // Limpia el campo oculto del ID del menú
             btnGuardar.Text = "Guardar"; // Cambia el texto del botón a "Guardar"
             mvwContainer.SetActiveView(viewMaintenance);

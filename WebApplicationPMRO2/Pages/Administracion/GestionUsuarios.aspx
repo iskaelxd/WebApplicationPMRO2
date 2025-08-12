@@ -28,10 +28,7 @@
         <asp:BoundField DataField="puesto" HeaderText="Puesto" SortExpression="puesto" />
         <asp:BoundField DataField="globalId" HeaderText="GlobalId" SortExpression="globalId" />
         <asp:BoundField DataField="correo" HeaderText="Correo" SortExpression="correo" />
-        <asp:BoundField DataField="Nombre" HeaderText="Rol" SortExpression="Nombre" />
         <asp:BoundField DataField="Id" HeaderText="Id" Visible="false" />
-        <asp:BoundField DataField="RolId" HeaderText="RolId" Visible="false" />
-        <asp:BoundField DataField="ModuloId" HeaderText="ModuloId" Visible="false" />
         <asp:TemplateField HeaderText="Acciones">
             <ItemTemplate>
                 <div class="d-flex justify-content-center">
@@ -82,20 +79,6 @@
             </div>
         </div>
            <div class="col">
-               <div class="row mt-4">
-
-                   <div class="col-4">
-                    <asp:Label runat="server" Text="Seleccione Módulo:" CssClass="form-label" />
-                    <asp:DropDownList ID="ddlModulo" runat="server" CssClass="form-select" OnSelectedIndexChanged ="Modulo_SelectedIndexChanged" AutoPostBack="true" ></asp:DropDownList>
-                </div>
-
-                 <div class="col-4">
-                <asp:Label runat="server" Text="Seleccione Rol:" CssClass="form-label" />
-                <asp:DropDownList ID="ddlRol" runat="server" CssClass="form-select" AutoPostBack="true"></asp:DropDownList>
-                </div>
-
-               </div>
-
                <div class="row mt-4">
                     <div class="col-4">
                      <asp:Label runat="server"  Text="Nombre:" CssClass="form-label" />

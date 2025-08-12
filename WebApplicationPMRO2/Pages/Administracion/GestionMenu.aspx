@@ -21,9 +21,6 @@
                                    <asp:Button runat="server" ID="btnAddNew" Text="Nueva Opcion Menu" CssClass="btn btn-success" OnClick="btnAddNew_Click" />
                             </div>
                            </div>
-                    <div class="col-4">
-                       <asp:DropDownList ID="ddlModulo" runat="server" CssClass="form-select" OnSelectedIndexChanged="MenuSelected_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
-                    </div>
                     </div>
                   
 
@@ -31,14 +28,12 @@
         AutoGenerateColumns="False" GridLines="None" EmptyDataText="No hay módulos registrados.">
         <Columns>
             <asp:BoundField DataField="MenuId" HeaderText="MenuId" SortExpression="MenuId" />
-            <asp:BoundField DataField="ModuloNombre" HeaderText="Nombre Modulo" SortExpression="ModuloNombre"/>
             <asp:BoundField DataField="Titulo" HeaderText="Titulo" SortExpression="Titulo" />
             <asp:BoundField DataField="Url" HeaderText="Url" SortExpression="Url" />
             <asp:BoundField DataField="Icono" HeaderText="Icono" SortExpression="Icono" />
             <asp:BoundField DataField="Orden" HeaderText="Orden" SortExpression="Orden" />
             
-   
-            <asp:BoundField DataField="ModuloId" HeaderText="ModuloId" Visible="false" />
+  
 
             <asp:TemplateField HeaderText="Acciones">
                 <ItemTemplate>
@@ -93,10 +88,6 @@
                     <div class="row mt-4">
         <div class="col">
             <div class="row mb-3">
-                <div class="col-4">
-                    <asp:Label runat="server" Text="Seleccione Módulo:" CssClass="form-label" />
-                    <asp:DropDownList ID="ddlMenu" runat="server" CssClass="form-select" AutoPostBack="true"></asp:DropDownList>
-                </div>
                 <div class="col-4">
                     <asp:Label runat="server" AssociatedControlID="txtTitulo" Text="Título:" CssClass="form-label" />
                     <asp:TextBox runat="server" ID="txtTitulo" CssClass="form-control" />

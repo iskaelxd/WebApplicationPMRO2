@@ -51,15 +51,6 @@ namespace WebApplicationPMRO2.Pages.Administracion
         protected global::System.Web.UI.WebControls.Button btnAddNew;
 
         /// <summary>
-        /// ddlModulo control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlModulo;
-
-        /// <summary>
         /// tblMenu control.
         /// </summary>
         /// <remarks>
@@ -112,15 +103,6 @@ namespace WebApplicationPMRO2.Pages.Administracion
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnCancel;
-
-        /// <summary>
-        /// ddlMenu control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlMenu;
 
         /// <summary>
         /// txtTitulo control.

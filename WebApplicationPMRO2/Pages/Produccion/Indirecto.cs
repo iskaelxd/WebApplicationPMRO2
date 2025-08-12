@@ -15,7 +15,11 @@ namespace WebApplicationPMRO2.Pages.Produccion
 
         public string OrderQnty { get; set; }
 
+        public string UM { get; set; }
 
+        public string PrLocation { get; set; }
+
+        public string Price { get; set; }
 
     }
 }

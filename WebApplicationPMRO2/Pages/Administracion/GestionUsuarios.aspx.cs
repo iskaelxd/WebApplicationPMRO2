@@ -19,9 +19,7 @@ namespace WebApplicationPMRO2.Pages.Administracion
         {
             if (!IsPostBack)
             {
-              //  LoadData();
-                //LoadDropdownModuloAdd();
-                //ddlRol.Items.Add(new ListItem("Seleccione un Modulo antes del Rol", "0"));
+                LoadData();
             }
         }
 
@@ -35,10 +33,7 @@ namespace WebApplicationPMRO2.Pages.Administracion
             dt.Columns.Add("puesto", typeof(string));
             dt.Columns.Add("globalId", typeof(string));
             dt.Columns.Add("correo", typeof(string));
-            dt.Columns.Add("Nombre", typeof(string));
             dt.Columns.Add("Id", typeof(int));
-            dt.Columns.Add("RolId", typeof(int));
-            dt.Columns.Add("ModuloId", typeof(int));
 
             using (SqlDataReader reader = Funciones.ExecuteReader(
                 "[Administracion].[SP_Gestion_Usuarios]",
@@ -52,10 +47,7 @@ namespace WebApplicationPMRO2.Pages.Administracion
                     row["puesto"] = reader["puesto"];
                     row["globalId"] = reader["globalId"];
                     row["correo"] = reader["correo"];
-                    row["Nombre"] = reader["Nombre"];
                     row["Id"] = reader["Id"];
-                    row["RolId"] = reader["RolId"];
-                    row["ModuloId"] = reader["ModuloId"];
                     dt.Rows.Add(row);
                 }
             }
@@ -80,21 +72,6 @@ namespace WebApplicationPMRO2.Pages.Administracion
         }
 
 
-        protected void Modulo_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            string value = ddlModulo.SelectedValue;
-            if (value != "0")
-            {
-                LoadDropdownRol(value);
-            }
-            else
-            {
-                ddlRol.Items.Clear();
-                ddlRol.Items.Add(new ListItem("Seleccione un Rol", "0"));
-               // LoadData();
-            }
-        }
-
         //realizar un insert a la base de datos 
         protected void btnAddUser_Click(object sender, EventArgs e)
         {
@@ -105,10 +82,10 @@ namespace WebApplicationPMRO2.Pages.Administracion
 
 
                 if (string.IsNullOrEmpty(txtnombre.Text) || string.IsNullOrEmpty(txtcorreo.Text) ||
-                    string.IsNullOrEmpty(txtglobalId.Text) || string.IsNullOrEmpty(txtpuesto.Text) || ddlRol.SelectedValue == "0")
+                    string.IsNullOrEmpty(txtglobalId.Text) || string.IsNullOrEmpty(txtpuesto.Text))
                 {
                     Funciones.MostrarToast("debe de completar todos los campos", "danger", "top-0 end-0", 3000);
-
+                    return;
                 }
 
 
@@ -117,8 +94,8 @@ namespace WebApplicationPMRO2.Pages.Administracion
 
                     using (SqlDataReader reader = Funciones.ExecuteReader(
                     "[Administracion].[SP_Gestion_Usuarios]",
-                    new[] { "@TransactionCode", "@nombreEmpleado", "@correo", "@puesto", "@globalId", "@RolId","@UserId" },
-                    new[] { "U", txtnombre.Text, txtcorreo.Text, txtpuesto.Text, txtglobalId.Text, ddlRol.SelectedValue,TextId.Text}))
+                    new[] { "@TransactionCode", "@nombreEmpleado", "@correo", "@puesto", "@globalId","@UserId" },
+                    new[] { "U", txtnombre.Text, txtcorreo.Text, txtpuesto.Text, txtglobalId.Text,TextId.Text}))
                     {
                         if (reader.Read())
                         {
@@ -141,8 +118,8 @@ namespace WebApplicationPMRO2.Pages.Administracion
                 {
                     using (SqlDataReader reader = Funciones.ExecuteReader(
                     "[Administracion].[SP_Gestion_Usuarios]",
-                    new[] { "@TransactionCode", "@nombreEmpleado", "@correo", "@puesto", "@globalId", "@RolId" },
-                    new[] { "I", txtnombre.Text, txtcorreo.Text, txtpuesto.Text, txtglobalId.Text, ddlRol.SelectedValue }))
+                    new[] { "@TransactionCode", "@nombreEmpleado", "@correo", "@puesto", "@globalId" },
+                    new[] { "I", txtnombre.Text, txtcorreo.Text, txtpuesto.Text, txtglobalId.Text }))
                     {
                         if (reader.Read())
                         {
@@ -178,9 +155,6 @@ namespace WebApplicationPMRO2.Pages.Administracion
 
         protected void CleanElements()
         {
-            ddlModulo.SelectedIndex = 0;
-            ddlRol.Items.Clear();
-            ddlRol.Items.Add(new ListItem("Seleccione un Modulo antes del Rol", "0"));
             txtnombre.Text = string.Empty;
             txtcorreo.Text = string.Empty;
             txtglobalId.Text = string.Empty;
@@ -215,9 +189,6 @@ namespace WebApplicationPMRO2.Pages.Administracion
                     txtcorreo.Text = row["correo"].ToString();
                     txtglobalId.Text = row["globalId"].ToString();
                     txtpuesto.Text = row["puesto"].ToString();
-                    ddlModulo.SelectedValue = row["ModuloId"].ToString();
-                    LoadDropdownRol(ddlModulo.SelectedValue);
-                    ddlRol.SelectedValue = row["RolId"].ToString();
                     TextId.Text = row["Id"].ToString();
                     btnAddUser.Text = "Actualizar";
 
@@ -287,34 +258,6 @@ namespace WebApplicationPMRO2.Pages.Administracion
             }
         }
 
-
-        protected void LoadDropdownModuloAdd()
-        {
-            Funciones.LlenarDropDownList(
-           ddlModulo,
-               "[Administracion].[SP_ModulosRoles]",
-               new[] { "@TransactionCode" },
-               new[] { "SM" },
-               "Seleccione un Módulo",
-               "0",
-               "Nombre",
-               "Id"
-           );
-        }
-
-        protected void LoadDropdownRol(string value)
-        {
-            Funciones.LlenarDropDownList(
-         ddlRol,
-             "[Administracion].[SP_ModulosRoles]",
-             new[] { "@TransactionCode", "@ModuloId" },
-             new[] { "SR", value },
-             "Seleccione un Rol",
-             "0",
-             "NombreRol",
-             "Id"
-         );
-        }
 
     }//END
 }

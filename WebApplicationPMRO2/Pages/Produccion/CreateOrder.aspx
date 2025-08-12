@@ -270,7 +270,16 @@
             <Columns>
                 <asp:BoundField DataField="PartNumber" HeaderText="Número de Parte" />
                 <asp:BoundField DataField="ProductDescription" HeaderText="Producto" />
-                <asp:BoundField DataField="OrderQnty" HeaderText="Cantidad" />
+                <asp:TemplateField HeaderText="Cantidad">
+                    <ItemTemplate>
+                        <asp:TextBox ID="txtCantidad" runat="server"
+                            Text='<%# Eval("OrderQnty") %>'
+                            AutoPostBack="true"
+                            OnTextChanged="txtCantidad_TextChanged"
+                            CssClass="form-control form-control-sm text-center" />
+                    </ItemTemplate>
+                </asp:TemplateField>
+
                 <asp:TemplateField HeaderText="Acciones">
                 <ItemTemplate>
                     <div class="d-flex justify-content-center">
