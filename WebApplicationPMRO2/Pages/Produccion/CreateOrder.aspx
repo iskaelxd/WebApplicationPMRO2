@@ -29,6 +29,11 @@
     color: #0d6efd;
 }
 
+  .tbl-order td, .tbl-order th { vertical-align: middle; }
+  .tbl-order .cell-id { width: 100px; white-space: nowrap; }
+  .tbl-order .cell-area { max-width: 280px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tbl-order .cell-actions { width: 220px; }
+  .table-responsive thead.sticky th { position: sticky; top: 0; z-index: 1; background: #f8f9fa; }
 
     </style>
 
@@ -55,7 +60,7 @@
     <div class="row mt-3">
         <div class="col-md-3">
             <label>Seleccione un Status</label>
-               <asp:DropDownList ID="ddlStatus" runat="server" CssClass="form-select">
+               <asp:DropDownList ID="ddlStatus" runat="server" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlStatus_SelectedIndexChanged">
                </asp:DropDownList>
         </div>
 
@@ -67,71 +72,81 @@
 
         <div class="col-md-3"  ID="linea" runat="server" visible="false">
             <label>Seleccione una linea</label>
-            <asp:DropDownList ID="ddlLinea" runat="server" CssClass="form-select">
+            <asp:DropDownList ID="ddlLinea" runat="server" CssClass="form-select" OnSelectedIndexChanged="ddlLinea_SelectedIndexChanged" AutoPostBack="true">
             </asp:DropDownList>
             </div>
 
-        <div class="col-md-3">
-            <label>Seleccione una fecha</label>
-            <asp:TextBox runat="server" TextMode="Date" CssClass="form-control"/>
-            
-        </div>
-
     </div>
+        <!--tabla de Ordenes creadas-->
+          <div class="table-responsive shadow-sm rounded mt-5">
+  <asp:GridView ID="tblorder" runat="server"
+    CssClass="table table-sm table-striped table-hover align-middle mb-0 tbl-order"
+    AutoGenerateColumns="False" GridLines="None" UseAccessibleHeader="true"
+    OnRowCommand="tblorder_RowCommand" OnPreRender="tblorder_PreRender"
+    EmptyDataText="No hay módulos registrados.">
 
-   <div class="bd-example m-0 border-0 mt-4">
-  <div class="table-responsive">
-    <table class="table table-sm table-bordered table-hover align-middle text-center shadow-sm rounded">
-      <thead >
-        <tr>
-          <th scope="col">OrderId</th>
-          <th scope="col">StatusId</th>
-          <th scope="col">Área o Línea</th>
-          <th scope="col">Fecha</th>
-          <th scope="col">Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <th scope="row">1</th>
-          <td>Mark</td>
-          <td>Otto</td>
-          <td>@mdo</td>
-          <td>
-            <div class="d-flex justify-content-center gap-2">
-              <asp:Button ID="btnViewDetails" runat="server" Text="Ver Detalles" CssClass="btn btn-info btn-sm text-white" />
-              <asp:Button ID="btnDeleteOrder" runat="server" Text="Eliminar" CssClass="btn btn-danger btn-sm" />
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <th scope="row">2</th>
-          <td>Jacob</td>
-          <td>Thornton</td>
-          <td>@fat</td>
-          <td>
-            <div class="d-flex justify-content-center gap-2">
-              <asp:Button ID="Button1" runat="server" Text="Ver Detalle" CssClass="btn btn-info btn-sm text-white" />
-              <asp:Button ID="Button2" runat="server" Text="Eliminar" CssClass="btn btn-danger btn-sm" />
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <th scope="row">3</th>
-          <td>John</td>
-          <td>Doe</td>
-          <td>@social</td>
-          <td>
-            <div class="d-flex justify-content-center gap-2">
-              <asp:Button ID="Button3" runat="server" Text="Ver Detalles" CssClass="btn btn-info btn-sm text-white" />
-              <asp:Button ID="Button4" runat="server" Text="Eliminar" CssClass="btn btn-danger btn-sm" />
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <Columns>
+      <asp:BoundField DataField="IdOrder" HeaderText="OrderId" SortExpression="IdOrder">
+        <ItemStyle CssClass="cell-id" />
+      </asp:BoundField>
+
+      <asp:BoundField DataField="AreaOrLine" HeaderText="Area o Linea" SortExpression="Area o Linea">
+        <ItemStyle CssClass="cell-area" />
+      </asp:BoundField>
+
+      <asp:BoundField DataField="StatusId" HeaderText="Estatus" SortExpression="StatusId" />
+
+      <asp:BoundField DataField="UpdatedBy" HeaderText="Solicitado Por" SortExpression="StatusId" />
+
+      <asp:TemplateField HeaderText="Acciones">
+        <ItemStyle CssClass="cell-actions text-center" />
+        <ItemTemplate>
+          <div class="d-flex justify-content-center gap-2">
+            <asp:Button ID="btnEditar" runat="server" Text="Consultar"
+              CssClass="btn btn-outline-info btn-sm"
+              CommandName="Consultar" CommandArgument='<%# Eval("IdOrder") %>' />
+            <asp:Button ID="btnEliminar" runat="server" Text="Eliminar"
+              CssClass="btn btn-outline-danger btn-sm"
+              CommandName="Eliminar" CommandArgument='<%# Eval("IdOrder") %>' />
+          </div>
+        </ItemTemplate>
+      </asp:TemplateField>
+    </Columns>
+
+    <HeaderStyle CssClass="table-light" />
+    <EmptyDataTemplate>
+      <div class="text-center p-4 text-muted">No hay módulos registrados.</div>
+    </EmptyDataTemplate>
+  </asp:GridView>
+</div>
+            <!--fin de Ordenes creadas-->
+
+            <!--Modal Eliminacion-->
+
+ <div class="modal fade" id="modalEliminar" tabindex="-1" aria-labelledby="modalEliminarLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-3 shadow">
+      <div class="modal-body p-4 text-center">
+          <asp:HiddenField ID="hfIdorder" runat="server" />
+        <h5 class="mb-0">¿Estás seguro de eliminar la <asp:Literal ID="litNombreRolEliminar" runat="server" />?</h5>
+        <p class="mb-0">Una vez eliminado ya no lo podrás recuperar</p>
+      </div>
+      <div class="modal-footer flex-nowrap p-0">
+        <asp:Button ID="confirmDelete" runat="server" Text="Si, Eliminar" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0 border-end" OnClick="btnEliminar_Click"/>
+        <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0" data-bs-dismiss="modal">
+          No, gracias
+        </button>
+      </div>
+    </div>
   </div>
 </div>
+
+            <!-- Fin Modal Eliminacion-->
+
+
+
+
+
      </asp:View>
         <asp:View ID="vmCreateOrder" runat="server">
 
@@ -194,19 +209,35 @@
                   <div class="modal-body">
                     
                       <div class="row">
-                          <div class="col-4">
-                              <asp:Label runat="server" Text="Seleccione una categoría:" CssClass="form-label" />
-                              <asp:DropDownList ID="ddlCategorias" runat="server" CssClass="form-select">
-                              </asp:DropDownList>
-                          </div>
+                          <!-- Cabecera de filtros del modal -->
+<asp:Panel runat="server" DefaultButton="btnBuscarProducto"> 
+  <div class="row">
+    <div class="col-4">
+      <asp:Label runat="server" Text="Seleccione una categoría:" CssClass="form-label" />
+      <asp:DropDownList ID="ddlCategorias" runat="server" CssClass="form-select"
+          AutoPostBack="true"
+          OnSelectedIndexChanged="ddlCategorias_SelectedIndexChanged">
+      </asp:DropDownList>
+    </div>
 
-                          <div class="col-4">
-                              <asp:Label runat="server" Text="Busque un producto por descripcion o numero de parte:" CssClass="form-label" />
-                              <asp:TextBox ID="txtBuscar" runat="server" CssClass="form-control" placeholder="Buscar producto..."/>
-                          </div>
-                          <div class="col-4">
-                              <asp:Button ID="btnBuscarProducto" runat="server" Text="Buscar" CssClass="btn btn-primary mt-4" />
-                      </div>
+    <div class="col-4">
+      <asp:Label runat="server" Text="Busque un producto por descripcion o numero de parte:" CssClass="form-label" />
+      <asp:TextBox ID="txtBuscar" runat="server" CssClass="form-control" placeholder="Buscar producto..." />
+    </div>
+
+    <div class="col-4 d-flex align-items-end gap-2">
+      <asp:Button ID="btnBuscarProducto" runat="server" Text="Buscar"
+          CssClass="btn btn-primary"
+          OnClick="btnBuscarProducto_Click" />
+
+      <!-- Opcional: limpiar filtros -->
+      <asp:Button ID="btnLimpiarFiltros" runat="server" Text="Limpiar"
+          CssClass="btn btn-outline-secondary"
+          OnClick="btnLimpiarFiltros_Click" />
+    </div>
+  </div>
+</asp:Panel>
+
                        </div>
 
                      
@@ -245,9 +276,63 @@
 </div>
 
                   </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                  </div>
+                 <div class="modal-footer justify-content-between">
+  <asp:Label ID="lblPagerInfo" runat="server" CssClass="small text-muted" />
+
+  <div class="d-flex align-items-center gap-2">
+    <!-- Tamaño de página -->
+    <span class="small">Por página</span>
+    <asp:DropDownList ID="ddlPageSize" runat="server"
+        CssClass="form-select form-select-sm w-auto"
+        AutoPostBack="true"
+        OnSelectedIndexChanged="ddlPageSize_SelectedIndexChanged">
+      <asp:ListItem Text="12" Value="12" />
+      <asp:ListItem Text="24" Value="24" />
+      <asp:ListItem Text="48" Value="48" />
+      <asp:ListItem Text="96" Value="96" />
+    </asp:DropDownList>
+
+    <!-- Navegación -->
+    <asp:LinkButton ID="btnFirst" runat="server"
+        CssClass="btn btn-outline-secondary btn-sm"
+        CommandName="Page" CommandArgument="First"
+        OnCommand="Pager_Command">&laquo;</asp:LinkButton>
+
+    <asp:LinkButton ID="btnPrev" runat="server"
+        CssClass="btn btn-outline-secondary btn-sm"
+        CommandName="Page" CommandArgument="Prev"
+        OnCommand="Pager_Command">&lsaquo;</asp:LinkButton>
+
+    <!-- Números dinámicos -->
+    <asp:Repeater ID="rptPages" runat="server" OnItemCommand="rptPages_ItemCommand">
+      <ItemTemplate>
+        <asp:LinkButton ID="lnkPage" runat="server"
+            CommandName="Page"
+            CommandArgument='<%# Eval("Number") %>'
+            CssClass='<%# (bool)Eval("Active") ? "btn btn-primary btn-sm" : "btn btn-outline-secondary btn-sm" %>'
+            Text='<%# Eval("Number") %>' />
+      </ItemTemplate>
+    </asp:Repeater>
+
+    <asp:LinkButton ID="btnNext" runat="server"
+        CssClass="btn btn-outline-secondary btn-sm"
+        CommandName="Page" CommandArgument="Next"
+        OnCommand="Pager_Command">&rsaquo;</asp:LinkButton>
+
+    <asp:LinkButton ID="btnLast" runat="server"
+        CssClass="btn btn-outline-secondary btn-sm"
+        CommandName="Page" CommandArgument="Last"
+        OnCommand="Pager_Command">&raquo;</asp:LinkButton>
+
+    <!-- Ir a... -->
+    <asp:TextBox ID="txtGo" runat="server"
+        CssClass="form-control form-control-sm w-auto" placeholder="Ir a..." />
+    <asp:LinkButton ID="btnGo" runat="server"
+        CssClass="btn btn-outline-secondary btn-sm"
+        OnClick="btnGo_Click">Ir</asp:LinkButton>
+  </div>
+</div>
+
                 </div>
               </div>
             </div>
@@ -300,11 +385,86 @@
 
         </asp:View>
 
+      <asp:View ID="vwViewOrderDetails" runat="server">
+    <!-- Encabezado de la orden -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 text-primary fw-bold mb-0">
+            Detalle de Orden: <asp:Literal ID="OrdeIdH" runat="server" />
+        </h1>
+        <asp:Button ID="btnBack" runat="server" Text="← Volver" CssClass="btn btn-outline-secondary" OnClick="btnBack_Click" />
+    </div>
+
+    <!-- Tabla de detalles de la orden -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-light">
+            <h5 class="mb-0">Numeros de Parte Solicitados</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <asp:GridView ID="tblorderDetails" runat="server"
+                    CssClass="table table-hover table-bordered mb-0"
+                    AutoGenerateColumns="False"
+                    GridLines="None"
+                    EmptyDataText="No hay módulos registrados.">
+                    <Columns>
+                        <asp:BoundField DataField="PartNumb" HeaderText="Número de Parte" SortExpression="PartNumb" />
+                        <asp:BoundField DataField="PartDescription" HeaderText="Descripción" SortExpression="PartDescription" />
+                        <asp:BoundField DataField="OrderQnty" HeaderText="Cantidad" SortExpression="Cantidad" />
+                        <asp:BoundField DataField="UM" HeaderText="UM" SortExpression="UM" />
+                    </Columns>
+                </asp:GridView>
+            </div>
+        </div>
+    </div>
+</asp:View>
+
+
+
 </asp:MultiView>
              </ContentTemplate>
+
 </asp:UpdatePanel>
 
 
+    <script>
+        (function () {
+            // Limpia backdrops y estado del body
+            function cleanupBackdrops() {
+                document.body.classList.remove('modal-open');
+                document.body.style.removeProperty('padding-right');
+                document.querySelectorAll('.modal-backdrop')
+                    .forEach(el => el.parentNode && el.parentNode.removeChild(el));
+            }
+
+            // Re-vincula eventos del modal (por si el UpdatePanel re-renderizó)
+            function wireModal() {
+                var el = document.getElementById('catalogModal');
+                if (!el || !window.bootstrap) return;
+                el.removeEventListener('hidden.bs.modal', cleanupBackdrops);
+                el.addEventListener('hidden.bs.modal', cleanupBackdrops);
+            }
+
+            // Exponer helpers para usarlos desde server-side
+            window.__catalog_cleanup = cleanupBackdrops;
+            window.__catalog_wire = wireModal;
+
+            // Al cargar
+            document.addEventListener('DOMContentLoaded', function () {
+                wireModal();
+            });
+
+            // Después de cada postback parcial de ASP.NET AJAX
+            if (window.Sys && Sys.WebForms && Sys.WebForms.PageRequestManager) {
+                var prm = Sys.WebForms.PageRequestManager.getInstance();
+                prm.add_endRequest(function () {
+                    // El contenido dentro de UpdatePanel puede haber cambiado
+                    wireModal();
+                    // Por si quedó una backdrop previa al re-render
+                    cleanupBackdrops();
+                });
+            }
+        })();
+    </script>
 
 
 
