@@ -401,13 +401,20 @@ namespace WebApplicationPMRO2.Pages.Almacen
                          new[] { "@TransactionCode", "@OrderHeaderId" },
                          new[] { "S", hdnOrderId.Value }))
                 {
+                    bool hayMarcados = false;
+
                     while (reader.Read())
                     {
-                        if (reader["Marcado"] == DBNull.Value || !Convert.ToBoolean(reader["Marcado"]))
+                        if (Convert.ToBoolean(reader["Marcado"]) == true)
                         {
-                            Funciones.MostrarToast("Debe marcar al menos un artículo como listo.", "warning", "top-0 end-0", 3000);
-                            return; // Salir si no hay artículos marcados
+                            hayMarcados = true;
                         }
+                    }
+
+                    if (!hayMarcados)
+                    {
+                        Funciones.MostrarToast("Debe marcar al menos un artículo como listo.", "warning", "top-0 end-0", 3000);
+                        return; // Salir si no hay artículos marcados
                     }
                 }
 

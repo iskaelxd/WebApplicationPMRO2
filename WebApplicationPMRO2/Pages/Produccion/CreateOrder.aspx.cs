@@ -650,6 +650,12 @@ namespace WebApplicationPMRO2.Pages.Produccion
                 ddlAreaS.Enabled = true;
                 ddlLineaS.Enabled = true;
                 lineaS.Visible = false; // Ocultar el dropdown de línea si no es necesario
+
+                txtNumberPart.Text = string.Empty; // Limpiar el campo de número de parte
+                txtQnty.Text = string.Empty; // Limpiar el campo de cantidad
+                ddlAreaS.SelectedIndex = 0; // Reiniciar el dropdown de área
+                ddlLineaS.SelectedIndex = 0; // Reiniciar el dropdown de línea
+
                 LoadData(); // Recargar la tabla de órdenes para mostrar la nueva orden creada
 
 
