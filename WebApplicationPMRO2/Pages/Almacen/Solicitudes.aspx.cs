@@ -113,7 +113,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
 
                 // Armamos los parámetros (mantén el orden de nombres/valores)
                 var paramNames = new List<string> { "@TransactionCode", "@AreaId", "@LineId", "@StatusId", "@Search" };
-                var paramValues = new List<string> { "S", areaId, lineId, statusId, raw };
+                var paramValues = new List<string> { "O", areaId, lineId, statusId, raw };
 
                 using (SqlDataReader reader = FuncionesMes.ExecuteReader(
                     "[dbo].[SP_IndirectMaterials_OrderHeader]",
@@ -145,7 +145,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
 
                     tblorder.DataSource = dt;
                     tblorder.DataBind();
- 
+
                 }
             }
             catch (Exception ex)
@@ -221,12 +221,12 @@ namespace WebApplicationPMRO2.Pages.Almacen
                 using (SqlDataReader reader = FuncionesMes.ExecuteReader(
                     "[dbo].[SP_IndirectMaterials_OrderHeader]",
                     new[] { "@TransactionCode", "@OrderHeaderId" },
-                    new[] { "S", orderId.ToString() }))
+                    new[] { "O", orderId.ToString() }))
                 {
                     if (reader != null && reader.Read())
                     {
 
-                       lblOrderId.Text = reader["OrderHeaderId"].ToString();
+                        lblOrderId.Text = reader["OrderHeaderId"].ToString();
 
                         status = reader["StatusId"].ToString();
 
@@ -258,12 +258,23 @@ namespace WebApplicationPMRO2.Pages.Almacen
                     gvDetalle.Enabled = false; // Deshabilitar la grilla para evitar cambios
                     btnGuardarMarcados.Visible = false; // Ocultar botón de guardar marcados
                 }
-                else if (status == "6") 
+                else if (status == "6")
                 {
                     btnListo.Visible = false;
                     btnSinInv.Visible = false;
                     gvDetalle.Enabled = false; // Deshabilitar la grilla para evitar cambios
                     btnGuardarMarcados.Visible = false; // Ocultar botón de guardar marcados 
+                    btnEliminar.Visible = true; // Ocultar botón de eliminar si ya está listo
+                    btnEntregar.Visible = true; // Ocultar botón de entregar si ya está listo
+                }
+                else if (status == "7")
+                {
+                    btnListo.Visible = false;
+                    btnSinInv.Visible = false;
+                    gvDetalle.Enabled = false; // Deshabilitar la grilla para evitar cambios
+                    btnGuardarMarcados.Visible = false; // Ocultar botón de guardar marcados 
+                    btnEliminar.Visible = true; // Ocultar botón de eliminar si ya está listo
+                    btnEntregar.Visible = false; // Ocultar botón de entregar si ya está listo
                 }
 
 
@@ -272,6 +283,34 @@ namespace WebApplicationPMRO2.Pages.Almacen
             {
                 Funciones.MostrarToast($"Error al cargar encabezado: {ex.Message}", "danger", "top-0 end-0", 3000);
                 MostrarListado();
+            }
+        }
+
+
+        protected void btnEntregar_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Aquí puedes implementar la lógica para entregar la orden
+                // Por ejemplo, cambiar el estado de la orden a "Entregado"
+                using (FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_OrderHeader]",
+                    new[] { "@TransactionCode", "@OrderHeaderId", "@StatusId" },
+                    new[] { "U", hdnOrderId.Value, "4" })) { }
+
+
+                using (FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_OrderHeader]",
+                    new[] { "@TransactionCode", "@OrderHeaderId" },
+                    new[] { "D", hdnOrderId.Value }))
+                {
+                    Funciones.MostrarToast("Orden entregada correctamente.", "success", "top-0 end-0", 3000);
+                    LoadData(); // Recargar la lista de órdenes
+                    MostrarListado(); // Volver a la vista de listado
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Funciones.MostrarToast($"Error al entregar la orden: {ex.Message}", "danger", "top-0 end-0", 3000);
             }
         }
 
@@ -384,9 +423,105 @@ namespace WebApplicationPMRO2.Pages.Almacen
             btnSinInv.Visible = true; // Asegúrate de mostrar el botón de sin inventario al regresar
             gvDetalle.Enabled = true; // Deshabilitar la grilla para evitar cambios
             btnGuardarMarcados.Visible = true; // Mostrar el botón de guardar marcados al regresar
+            btnEntregar.Visible = false; // Ocultar botón de entregar al regresar
+            btnEliminar.Visible = false; // Ocultar botón de eliminar al regresar
 
 
 
+        }
+
+
+        protected void btnSiEliminar_Click(Object sender, EventArgs e)
+        {
+            try
+            {
+
+                DataTable dt = ViewState["DetalleDT"] as DataTable;
+
+
+                foreach (DataRow dr in dt.Rows)
+                {
+
+
+                    if (dr["Marcado"] == DBNull.Value || !Convert.ToBoolean(dr["Marcado"]))
+                    {
+                        continue; // Saltar si no está marcado 
+                    }
+                    string Qnty = dr["OrderQnty"].ToString();
+                    string Disponible = dr["Disponible"].ToString();
+
+                    //if (Convert.ToInt32(Qnty) > Convert.ToInt32(Disponible))
+                    //{
+                    //    Funciones.MostrarToast("No se puede marcar como listo. Hay artículos con cantidad insuficiente.", "warning", "top-0 end-0", 3000);
+                    //    return; // Salir si hay cantidades insuficientes
+                    //}
+
+
+                    int Inventory = Convert.ToInt32(Disponible) + Convert.ToInt32(Qnty);
+
+
+                    using (SqlDataReader reader = FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_Products]",
+                         new[] { "@TransactionCode", "@PartNumb", "@Inventory" },
+                         new[] { "U", dr["PartNumb"].ToString(), Inventory.ToString() }))
+                    { }
+
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Funciones.MostrarToast($"Error al eliminar la orden: {ex.Message}", "danger", "top-0 end-0", 3000);
+                return; // Salir si hay un error
+            }
+
+            using (SqlDataReader reader = FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_OrderDetail]",
+            new[] { "@TransactionCode", "@OrderHeaderId" },
+            new[] { "D", hdnOrderId.Value }))
+            {
+
+
+            }
+
+            using (SqlDataReader reader = FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_OrderHeader]",
+                new[] { "@TransactionCode", "@OrderHeaderId" },
+                new[] { "D", hdnOrderId.Value, }))
+            {
+                if (reader.Read())
+                {
+                    Funciones.MostrarToast("Orden eliminada correctamente.", "success", "top-0 end-0", 3000);
+                    LoadData(); // Recargar la lista de órdenes
+                    MostrarListado(); // Volver a la vista de listado
+                    ScriptManager.RegisterStartupScript(this, GetType(), "ocultarModal", @"
+                            $('#modalEliminar').modal('hide');
+                            $('body').removeClass('modal-open');
+                            $('.modal-backdrop').remove();", true);
+                }
+                else
+                {
+                    Funciones.MostrarToast("Error al eliminar la orden.", "danger", "top-0 end-0", 3000);
+                }
+            }
+
+
+
+
+
+        }
+
+
+
+        protected void btnEliminar_Click(object sender, EventArgs e)
+        {
+            string ID = hdnOrderId.Value;
+            litNombreRolEliminar.Text = "Orden #" + ID;
+            if (string.IsNullOrEmpty(ID))
+            {
+                Funciones.MostrarToast("No se ha seleccionado ninguna orden para eliminar.", "warning", "top-0 end-0", 3000);
+                return;
+            }
+
+            ScriptManager.RegisterStartupScript(this, GetType(), "mostrarModal", "$('#modalEliminar').modal('show');", true);
         }
 
         protected void btnListo_Click(object sender, EventArgs e)
@@ -420,16 +555,16 @@ namespace WebApplicationPMRO2.Pages.Almacen
 
 
 
-                
+
 
                 DataTable dt = ViewState["DetalleDT"] as DataTable;
 
 
-                foreach (DataRow dr in dt.Rows) 
+                foreach (DataRow dr in dt.Rows)
                 {
 
 
-                    if(dr["Marcado"] == DBNull.Value || !Convert.ToBoolean(dr["Marcado"]))
+                    if (dr["Marcado"] == DBNull.Value || !Convert.ToBoolean(dr["Marcado"]))
                     {
                         continue; // Saltar si no está marcado
                     }
@@ -446,7 +581,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
                     int Inventory = Convert.ToInt32(Disponible) - Convert.ToInt32(Qnty);
 
 
-                    using(SqlDataReader reader = FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_Products]",
+                    using (SqlDataReader reader = FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_Products]",
                          new[] { "@TransactionCode", "@PartNumb", "@Inventory" },
                          new[] { "U", dr["PartNumb"].ToString(), Inventory.ToString() }))
                     { }
@@ -456,9 +591,9 @@ namespace WebApplicationPMRO2.Pages.Almacen
 
 
                 // Marcar la orden como "Listo para recoger" (StatusId = 3)
-                using (SqlDataReader reader =  FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_OrderHeader]",
+                using (SqlDataReader reader = FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_OrderHeader]",
                       new[] { "@TransactionCode", "@OrderHeaderId", "@StatusId" },
-                      new[] { "U", hdnOrderId.Value, "6" })) 
+                      new[] { "U", hdnOrderId.Value, "6" }))
                 {
                     //poner si fue exitoso manejarlo
 
@@ -469,18 +604,16 @@ namespace WebApplicationPMRO2.Pages.Almacen
                         btnSinInv.Visible = false; // Ocultar botón de sin inventario también
                         btnGuardarMarcados.Visible = false; // Ocultar botón de guardar marcados
                         gvDetalle.Enabled = false; // Deshabilitar la grilla para evitar cambios
+                        btnEntregar.Visible = true; // Mostrar botón de entregar
+                        btnEliminar.Visible = true; // Mostrar botón de eliminar
+                                                    // CargarEncabezado(int.Parse(hdnOrderId.Value)); // Recargar encabezado para reflejar cambios
                         CargarDetalle(int.Parse(hdnOrderId.Value)); // Recargar detalles para reflejar cambios
 
-                     
+
 
                     }
 
                 }
-
-
-
-
-
 
                 //Funciones.MostrarToast($"Orden marcada como Listo para recoger", "success", "top-0 end-0", 2000);
 
@@ -506,14 +639,14 @@ namespace WebApplicationPMRO2.Pages.Almacen
 
                 Funciones.MostrarToast($"Orden marcada como Sin inventario", "warning", "top-0 end-0", 2000);
 
-            btnSinInv.Visible = false; // Ocultar botón después de marcar
-            btnListo.Visible = false; // Ocultar botón de listo también 
-                                      // CargarEncabezado(int.Parse(hdnOrderId.Value));
-            btnGuardarMarcados.Visible = false; // Ocultar botón de guardar marcados
+                btnSinInv.Visible = false; // Ocultar botón después de marcar
+                btnListo.Visible = false; // Ocultar botón de listo también 
+                                          // CargarEncabezado(int.Parse(hdnOrderId.Value));
+                btnGuardarMarcados.Visible = false; // Ocultar botón de guardar marcados
 
-            gvDetalle.Enabled = false; // Deshabilitar la grilla para evitar cambios
-            CargarDetalle(int.Parse(hdnOrderId.Value));
-        }
+                gvDetalle.Enabled = false; // Deshabilitar la grilla para evitar cambios
+                CargarDetalle(int.Parse(hdnOrderId.Value));
+            }
             catch (Exception ex)
             {
                 Funciones.MostrarToast($"Error: {ex.Message}", "danger", "top-0 end-0", 3000);

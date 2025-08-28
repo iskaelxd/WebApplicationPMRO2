@@ -111,7 +111,10 @@
           <div class="d-flex gap-2">
             <asp:Button ID="btnListo" runat="server" CssClass="btn btn-success" Text="Listo para recoger" OnClick="btnListo_Click" />
             <asp:Button ID="btnSinInv" runat="server" CssClass="btn btn-warning" Text="Sin inventario" OnClick="btnSinInv_Click" />
-            <asp:Button ID="btnRegresar" runat="server" CssClass="btn btn-outline-secondary" Text="Regresar" OnClick="btnRegresar_Click" />
+              <asp:Button ID="btnEntregar" runat="server" CssClass="btn btn-success" Text="Entregado" visible="false" OnClick="btnEntregar_Click" />
+             <asp:Button ID="btnEliminar" runat="server" CssClass="btn btn-danger" Text="Eliminar" Visible="false" OnClick="btnEliminar_Click" />
+            <asp:Button ID="btnRegresar" runat="server" CssClass="btn btn-outline-secondary" Text="Regresar"  OnClick="btnRegresar_Click" />
+            
           </div>
         </div>
       </div>
@@ -159,6 +162,25 @@
   <asp:Button ID="btnGuardarMarcados" runat="server"
     CssClass="btn btn-primary" Text="Guardar selección"
     OnClick="btnGuardarMarcados_Click" />
+</div>
+
+
+
+         <div class="modal fade" id="modalEliminar" tabindex="-1" aria-labelledby="modalEliminarLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-3 shadow">
+      <div class="modal-body p-4 text-center">
+        <h5 class="mb-0">¿Estás seguro de eliminar la <asp:Literal ID="litNombreRolEliminar" runat="server" />?</h5>
+        <p class="mb-0">Una vez eliminado ya no lo podrás recuperar</p>
+      </div>
+      <div class="modal-footer flex-nowrap p-0">
+        <asp:Button ID="confirmDelete" runat="server" Text="Si, Eliminar" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0 border-end" OnClick="btnSiEliminar_Click"/>
+        <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0" data-bs-dismiss="modal">
+          No, gracias
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
 
 

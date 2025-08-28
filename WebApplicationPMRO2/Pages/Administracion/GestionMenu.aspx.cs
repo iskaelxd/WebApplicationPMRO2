@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using WebApplicationPMRO2.Utilities;
@@ -12,207 +9,233 @@ namespace WebApplicationPMRO2.Pages.Administracion
 {
     public partial class GestionMenu : System.Web.UI.Page
     {
-
-        
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack) 
+            if (!IsPostBack)
             {
-               
-                LoadData();
+                mvwContainer.SetActiveView(viewMaintenance);
+                LoadData(null);
             }
         }
 
-        protected void LoadData()
+        // ====== Listado y búsqueda ======
+
+        protected void btnBuscar_Click(object sender, EventArgs e)
         {
-            try
+            LoadData(txtBuscarTitulo.Text?.Trim());
+        }
+
+        protected void btnLimpiar_Click(object sender, EventArgs e)
+        {
+            txtBuscarTitulo.Text = string.Empty;
+            LoadData(null);
+        }
+
+        private void LoadData(string filtroTitulo)
+        {
+            var dt = new DataTable();
+            dt.Columns.Add("MenuId", typeof(int));
+            dt.Columns.Add("Titulo", typeof(string));
+            dt.Columns.Add("Url", typeof(string));
+            dt.Columns.Add("Icono", typeof(string));
+            dt.Columns.Add("Orden", typeof(int));
+
+            if (!string.IsNullOrWhiteSpace(filtroTitulo))
             {
-                DataTable dt = new DataTable();
-                dt.Columns.Add("MenuId", typeof(int));
-                dt.Columns.Add("Titulo", typeof(string));
-                dt.Columns.Add("Url", typeof(string));
-                dt.Columns.Add("Icono", typeof(string));
-                dt.Columns.Add("Orden", typeof(int));
-
-
-                using (SqlDataReader reader = Funciones.ExecuteReader("[Administracion].[SP_GestionMenu]", new[] { "@TransactionCode"}, new[] {"S"})) 
+                using (SqlDataReader reader = Funciones.ExecuteReader(
+                    "[Administracion].[SP_GestionMenu]",
+                    new[] { "@TransactionCode", "@Titulo" },
+                    new[] { "S", filtroTitulo }))
                 {
                     while (reader.Read())
                     {
-                        DataRow row = dt.NewRow();
-                        row["MenuId"] = reader["MenuId"];
-                        row["Titulo"] = reader["Titulo"];
-                        row["Url"] = reader["Url"];
-                        row["Icono"] = reader["Icono"];
-                        row["Orden"] = reader["Orden"];
+                        var row = dt.NewRow();
+                        row["MenuId"] = Convert.ToInt32(reader["MenuId"]);
+                        row["Titulo"] = reader["Titulo"].ToString();
+                        row["Url"] = reader["Url"].ToString();
+                        row["Icono"] = reader["Icono"].ToString();
+                        row["Orden"] = Convert.ToInt32(reader["Orden"]);
                         dt.Rows.Add(row);
                     }
-                    tblMenu.DataSource = dt;
-                    tblMenu.DataBind(); // ¡No olvides hacer el DataBind!
-
-                }
-
-
-            }
-            catch (Exception ex)
-            {
-
-                Funciones.MostrarToast($"Error al cargar los datos: {ex.Message}", "danger", "top-0 end-0", 3000);
-            }
-        }
-
-
-
-        protected void MenuSelected_SelectedIndexChanged (object sender, EventArgs e)
-        {
-            LoadData();
-            // Aquí puedes manejar el evento de cambio de selección del menú si es necesario
-            // Por ejemplo, podrías cargar datos específicos del menú seleccionado
-        }
-
-        protected void tblMenu_RowCommand(object sender, GridViewCommandEventArgs e)
-        {
-            if (e.CommandName == "Editar")
-            {
-                //Funciones.MostrarToast("Editar no implementado aún.", "info", "top-0 end-0", 3000);
-
-                int id = Convert.ToInt32(e.CommandArgument);
-                DataTable dt = (DataTable)tblMenu.DataSource;
-                if (dt == null)
-                {
-                    LoadData(); // Asegúrate de tener datos cargados
-                    dt = (DataTable)tblMenu.DataSource;
-                }
-
-                DataRow[] rows = dt.Select("MenuId = " + id);
-                
-                if (rows.Length > 0)
-                {
-                    DataRow row = rows[0];
-                    // Asigna los valores a los controles de edición
-                    txtTitulo.Text = row["Titulo"].ToString();
-                    txtUrl.Text = row["Url"].ToString();
-                    txtIcono.Text = row["Icono"].ToString();
-                    txtOrden.Text = row["Orden"].ToString();
-                    txtMenuId.Text = row["MenuId"].ToString(); // Asigna el ID del menú al campo oculto
-                    mvwContainer.SetActiveView(viewRecord);
-                    btnGuardar.Text = "Actualizar"; // Cambia el texto del botón a "Actualizar"
-                }
-
-
-
-            }
-            else if (e.CommandName == "Eliminar")
-            {
-                int id = Convert.ToInt32(e.CommandArgument);
-                DataTable dt = (DataTable)tblMenu.DataSource;
-                if (dt == null)
-                {
-                    LoadData(); // Asegúrate de tener datos cargados
-                    dt = (DataTable)tblMenu.DataSource;
-                }
-
-                DataRow[] rows = dt.Select("MenuId = " + id);
-                if (rows.Length > 0)
-                {
-                    hfIdMenuE.Value = rows[0]["MenuId"].ToString();
-                    litNombreMenuEliminar.Text = "<strong>" + rows[0]["Titulo"].ToString() + "?" + "</strong>";
-
-                    ScriptManager.RegisterStartupScript(this, GetType(), "mostrarModal", "$('#modalEliminar').modal('show');", true);
                 }
             }
-        }
-
-        protected void btnGuardar_Click(object sender, EventArgs e)
-        { 
-           if(string.IsNullOrEmpty(txtTitulo.Text) || string.IsNullOrEmpty(txtUrl.Text) || string.IsNullOrEmpty(txtIcono.Text) ||string.IsNullOrEmpty(txtOrden.Text))
+            else
             {
-                Funciones.MostrarToast("Por favor, complete todos los campos obligatorios.", "warning", "top-0 end-0", 3000);
-                return;
-            }
-
-            if (btnGuardar.Text == "Actualizar" && !string.IsNullOrEmpty(txtMenuId.Text))
-            {
-                UpdateMenu();
-                return;
-            }
-            
-            try
-            {
-              using (SqlDataReader reader = Funciones.ExecuteReader("[Administracion].[SP_GestionMenu]", new[] {"@Titulo","@Url","@Icono","@Orden","@TransactionCode" }, new[] {txtTitulo.Text,txtUrl.Text, txtIcono.Text,txtOrden.Text,"I"}  ))
+                using (SqlDataReader reader = Funciones.ExecuteReader(
+                    "[Administracion].[SP_GestionMenu]",
+                    new[] { "@TransactionCode" },
+                    new[] { "S" }))
                 {
-                    if (reader.Read() && reader["Resultado"].ToString() == "1") {
-
-                        Funciones.MostrarToast("Menu Agregado correctamente.", "success", "top-0 end-0", 3000);
-                        txtTitulo.Text = string.Empty; // Resetea el campo de título
-                        txtUrl.Text = string.Empty; // Resetea el campo de URL
-                        txtIcono.Text = string.Empty; // Resetea el campo de icono
-                        txtOrden.Text = string.Empty; // Resetea el campo de orden
-
-                        LoadData();
-                    }
-                    else
+                    while (reader.Read())
                     {
-                        Funciones.MostrarToast("Error al agregar el menú. Por favor, inténtelo de nuevo.", "danger", "top-0 end-0", 3000);
+                        var row = dt.NewRow();
+                        row["MenuId"] = Convert.ToInt32(reader["MenuId"]);
+                        row["Titulo"] = reader["Titulo"].ToString();
+                        row["Url"] = reader["Url"].ToString();
+                        row["Icono"] = reader["Icono"].ToString();
+                        row["Orden"] = Convert.ToInt32(reader["Orden"]);
+                        dt.Rows.Add(row);
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                Funciones.MostrarToast($"Error al guardar el registro: {ex.Message}", "danger", "top-0 end-0", 3000);
-            }
+
+            tblMenu.DataSource = dt;
+            tblMenu.DataBind();
         }
 
-        protected void UpdateMenu()
-        {
-            try
-            {
-                using (SqlDataReader reader = Funciones.ExecuteReader("[Administracion].[SP_GestionMenu]", new[] { "@MenuId", "@Titulo", "@Url", "@Icono", "@Orden", "@TransactionCode" }, new[] { txtMenuId.Text, txtTitulo.Text, txtUrl.Text, txtIcono.Text, txtOrden.Text, "U" }))
-                {
-                    if (reader.Read() && reader["Resultado"].ToString() == "1")
-                    {
-                        Funciones.MostrarToast("Menú actualizado correctamente.", "success", "top-0 end-0", 3000);
-                        LoadData();
-                    }
-                    else
-                    {
-                        Funciones.MostrarToast("Error al actualizar el menú. Por favor, inténtelo de nuevo.", "danger", "top-0 end-0", 3000);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Funciones.MostrarToast($"Error al actualizar el registro: {ex.Message}", "danger", "top-0 end-0", 3000);
-            }
-        }
+        // ====== Alta / Edición ======
+
         protected void btnAddNew_Click(object sender, EventArgs e)
         {
-          
+            CleanForm();
+            btnGuardar.Text = "Guardar";
             mvwContainer.SetActiveView(viewRecord);
         }
 
         protected void btnCancel_Click(object sender, EventArgs e)
         {
-            txtTitulo.Text = string.Empty;
-            txtUrl.Text = string.Empty;
-            txtIcono.Text = string.Empty;
-            txtOrden.Text = string.Empty;
-            txtMenuId.Text = string.Empty; // Limpia el campo oculto del ID del menú
-            btnGuardar.Text = "Guardar"; // Cambia el texto del botón a "Guardar"
+            CleanForm();
             mvwContainer.SetActiveView(viewMaintenance);
+        }
 
+        protected void btnGuardar_Click(object sender, EventArgs e)
+        {
+            var titulo = (txtTitulo.Text ?? "").Trim();
+            var url = (txtUrl.Text ?? "").Trim();
+            var icono = (txtIcono.Text ?? "").Trim();
+            var ordenStr = (txtOrden.Text ?? "").Trim();
+
+            if (string.IsNullOrWhiteSpace(titulo) ||
+                string.IsNullOrWhiteSpace(url) ||
+                string.IsNullOrWhiteSpace(icono) ||
+                string.IsNullOrWhiteSpace(ordenStr))
+            {
+                Funciones.MostrarToast("Por favor, completa todos los campos.", "danger", "top-0 end-0", 3000);
+                return;
+            }
+
+            if (!int.TryParse(ordenStr, out int orden) || orden < 0)
+            {
+                Funciones.MostrarToast("El orden debe ser un entero válido (>= 0).", "danger", "top-0 end-0", 3000);
+                return;
+            }
+
+            try
+            {
+                if (btnGuardar.Text == "Actualizar" && !string.IsNullOrEmpty(txtMenuId.Text))
+                {
+                    using (SqlDataReader reader = Funciones.ExecuteReader(
+                        "[Administracion].[SP_GestionMenu]",
+                        new[] { "@TransactionCode", "@MenuId", "@Titulo", "@Url", "@Icono", "@Orden" },
+                        new[] { "U", txtMenuId.Text, titulo, url, icono, orden.ToString() }))
+                    {
+                        if (reader.Read())
+                        {
+                            var resultado = reader["Resultado"]?.ToString();
+                            var message = SafeRead(reader, "Message");
+
+                            if (resultado == "1")
+                            {
+                                Funciones.MostrarToast("Menú actualizado correctamente.", "success", "top-0 end-0", 3000);
+                                CleanForm();
+                                mvwContainer.SetActiveView(viewMaintenance);
+                                LoadData(txtBuscarTitulo.Text?.Trim());
+                            }
+                            else
+                            {
+                                Funciones.MostrarToast(!string.IsNullOrWhiteSpace(message) ? message : "No se pudo actualizar.", "danger", "top-0 end-0", 4000);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    using (SqlDataReader reader = Funciones.ExecuteReader(
+                        "[Administracion].[SP_GestionMenu]",
+                        new[] { "@TransactionCode", "@Titulo", "@Url", "@Icono", "@Orden" },
+                        new[] { "I", titulo, url, icono, orden.ToString() }))
+                    {
+                        if (reader.Read())
+                        {
+                            var resultado = reader["Resultado"]?.ToString();
+                            var message = SafeRead(reader, "Message");
+
+                            if (resultado == "1")
+                            {
+                                Funciones.MostrarToast("Menú agregado correctamente.", "success", "top-0 end-0", 3000);
+                                CleanForm();
+                                mvwContainer.SetActiveView(viewMaintenance);
+                                LoadData(txtBuscarTitulo.Text?.Trim());
+                            }
+                            else
+                            {
+                                Funciones.MostrarToast(!string.IsNullOrWhiteSpace(message) ? message : "No se pudo agregar.", "danger", "top-0 end-0", 4000);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Funciones.MostrarToast("Error al guardar: " + ex.Message, "danger", "top-0 end-0", 4000);
+            }
+        }
+
+        // ====== Acciones en la tabla ======
+
+        protected void tblMenu_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            if (e.CommandName == "Editar")
+            {
+                int id = Convert.ToInt32(e.CommandArgument);
+                var row = GetMenuById(id);
+                if (row != null)
+                {
+                    txtMenuId.Text = row["MenuId"].ToString();
+                    txtTitulo.Text = row["Titulo"].ToString();
+                    txtUrl.Text = row["Url"].ToString();
+                    txtIcono.Text = row["Icono"].ToString();
+                    txtOrden.Text = row["Orden"].ToString();
+
+                    btnGuardar.Text = "Actualizar";
+                    mvwContainer.SetActiveView(viewRecord);
+                }
+                else
+                {
+                    Funciones.MostrarToast("No se encontró el registro.", "warning", "top-0 end-0", 3000);
+                }
+            }
+            else if (e.CommandName == "Eliminar")
+            {
+                int id = Convert.ToInt32(e.CommandArgument);
+                var row = GetMenuById(id);
+                if (row != null)
+                {
+                    hfIdMenuE.Value = row["MenuId"].ToString();
+                    litNombreMenuEliminar.Text = "<strong>" + Server.HtmlEncode(row["Titulo"].ToString()) + "</strong>";
+                    ScriptManager.RegisterStartupScript(this, GetType(), "mostrarModal", "$('#modalEliminar').modal('show');", true);
+                }
+                else
+                {
+                    Funciones.MostrarToast("No se encontró el registro.", "warning", "top-0 end-0", 3000);
+                }
+            }
         }
 
         protected void btnEliminar_Click(object sender, EventArgs e)
         {
             try
             {
-                using(SqlDataReader reader = Funciones.ExecuteReader("[Administracion].[SP_GestionMenu]", new[] { "@MenuId", "@TransactionCode" }, new[] { hfIdMenuE.Value, "D" }))
+                using (SqlDataReader reader = Funciones.ExecuteReader(
+                    "[Administracion].[SP_GestionMenu]",
+                    new[] { "@TransactionCode", "@MenuId" },
+                    new[] { "D", hfIdMenuE.Value }))
                 {
-                    if (reader.Read() && reader["Resultado"].ToString() == "1")
+                    if (reader.Read() && reader["Resultado"]?.ToString() == "1")
                     {
                         Funciones.MostrarToast("Menú eliminado correctamente.", "success", "top-0 end-0", 3000);
-                        LoadData();
+                        LoadData(txtBuscarTitulo.Text?.Trim());
+
                         ScriptManager.RegisterStartupScript(this, GetType(), "ocultarModal", @"
                             $('#modalEliminar').modal('hide');
                             $('body').removeClass('modal-open');
@@ -220,21 +243,63 @@ namespace WebApplicationPMRO2.Pages.Administracion
                     }
                     else
                     {
-                        Funciones.MostrarToast("Error al eliminar el menú. Por favor, inténtelo de nuevo.", "danger", "top-0 end-0", 3000);
+                        Funciones.MostrarToast("Error al eliminar el menú.", "danger", "top-0 end-0", 3000);
                     }
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-                Funciones.MostrarToast($"Error al eliminar el registro: {ex.Message}", "danger", "top-0 end-0", 3000);
+                Funciones.MostrarToast("Error al eliminar: " + ex.Message, "danger", "top-0 end-0", 3000);
             }
         }
 
+        // ====== Utilidades ======
 
-        //aqui puedo manejar el menu
-        protected void MenuSeletect_SelectedIndexChanged(object sender, EventArgs e)
+        private void CleanForm()
         {
+            txtMenuId.Text = string.Empty;
+            txtTitulo.Text = string.Empty;
+            txtUrl.Text = string.Empty;
+            txtIcono.Text = string.Empty;
+            txtOrden.Text = string.Empty;
+            btnGuardar.Text = "Guardar";
+        }
 
+        private DataRow GetMenuById(int id)
+        {
+            var dt = new DataTable();
+            dt.Columns.Add("MenuId", typeof(int));
+            dt.Columns.Add("Titulo", typeof(string));
+            dt.Columns.Add("Url", typeof(string));
+            dt.Columns.Add("Icono", typeof(string));
+            dt.Columns.Add("Orden", typeof(int));
+
+            using (SqlDataReader reader = Funciones.ExecuteReader(
+                "[Administracion].[SP_GestionMenu]",
+                new[] { "@TransactionCode", "@MenuId" },
+                new[] { "S", id.ToString() }))
+            {
+                while (reader.Read())
+                {
+                    var row = dt.NewRow();
+                    row["MenuId"] = Convert.ToInt32(reader["MenuId"]);
+                    row["Titulo"] = reader["Titulo"].ToString();
+                    row["Url"] = reader["Url"].ToString();
+                    row["Icono"] = reader["Icono"].ToString();
+                    row["Orden"] = Convert.ToInt32(reader["Orden"]);
+                    dt.Rows.Add(row);
+                }
+            }
+
+            return dt.Rows.Count > 0 ? dt.Rows[0] : null;
+        }
+
+        private static string SafeRead(SqlDataReader reader, string colName)
+        {
+            for (int i = 0; i < reader.FieldCount; i++)
+                if (reader.GetName(i).Equals(colName, StringComparison.OrdinalIgnoreCase))
+                    return reader.IsDBNull(i) ? null : reader.GetValue(i)?.ToString();
+            return null;
         }
     }
 }

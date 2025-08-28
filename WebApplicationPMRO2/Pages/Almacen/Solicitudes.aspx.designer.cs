@@ -168,6 +168,24 @@ namespace WebApplicationPMRO2.Pages.Almacen
         protected global::System.Web.UI.WebControls.Button btnSinInv;
 
         /// <summary>
+        /// btnEntregar control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnEntregar;
+
+        /// <summary>
+        /// btnEliminar control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnEliminar;
+
+        /// <summary>
         /// btnRegresar control.
         /// </summary>
         /// <remarks>
@@ -193,6 +211,24 @@ namespace WebApplicationPMRO2.Pages.Almacen
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnGuardarMarcados;
+
+        /// <summary>
+        /// litNombreRolEliminar control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal litNombreRolEliminar;
+
+        /// <summary>
+        /// confirmDelete control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button confirmDelete;
 
         /// <summary>
         /// hdnOrderId control.

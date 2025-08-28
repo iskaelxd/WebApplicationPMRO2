@@ -142,8 +142,6 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Modelos3D\license.txt" />
-    <Content Include="Pages\Administracion\GestionarModulos.aspx" />
-    <Content Include="Pages\Administracion\GestionarRoles.aspx" />
     <Content Include="Pages\Administracion\GestionMenu.aspx" />
     <Content Include="Pages\Administracion\GestionUsuarios.aspx" />
     <Content Include="Pages\Administracion\PermisoMenu.aspx" />
@@ -268,20 +266,6 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\MenuItemBD.cs" />
-    <Compile Include="Pages\Administracion\GestionarModulos.aspx.cs">
-      <DependentUpon>GestionarModulos.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Pages\Administracion\GestionarModulos.aspx.designer.cs">
-      <DependentUpon>GestionarModulos.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\Administracion\GestionarRoles.aspx.cs">
-      <DependentUpon>GestionarRoles.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Pages\Administracion\GestionarRoles.aspx.designer.cs">
-      <DependentUpon>GestionarRoles.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Pages\Administracion\GestionMenu.aspx.cs">
       <DependentUpon>GestionMenu.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

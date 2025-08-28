@@ -13,5 +13,39 @@ namespace WebApplicationPMRO2.Pages.Almacen
         {
 
         }
-    }
+
+        protected void btnMultiview_Click(object sender, EventArgs e)
+        {
+            if (btnMultiview.Text == "Actualizar Inventario")
+            {
+                btnMultiview.Text = "Agregar Numero Parte";
+                MultiViewNumerosParte.SetActiveView(ViewActulizarNumerosParte);
+            }
+            else
+            {
+                btnMultiview.Text = "Actualizar Inventario";
+                MultiViewNumerosParte.SetActiveView(ViewNumerosParte);
+            }
+
+               // MultiViewNumerosParte.SetActiveView(ViewActulizarNumerosParte);
+        }
+
+        protected void btnGuardarNumeroParte_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        //Dropdowns 
+
+        protected void LoadBuyers()
+        {
+            //Llenar dropdown con Buyers
+
+
+        }
+
+
+
+
+    }//END
 }

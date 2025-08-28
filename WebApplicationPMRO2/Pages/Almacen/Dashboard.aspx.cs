@@ -87,11 +87,5 @@ namespace WebApplicationPMRO2.Pages.Almacen
         }
 
 
-
-
-
-
-
-
     }
 }

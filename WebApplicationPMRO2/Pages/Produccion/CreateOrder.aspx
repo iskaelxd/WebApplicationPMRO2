@@ -405,12 +405,14 @@
                     CssClass="table table-hover table-bordered mb-0"
                     AutoGenerateColumns="False"
                     GridLines="None"
-                    EmptyDataText="No hay módulos registrados.">
+                    EmptyDataText="No hay módulos registrados."
+                    OnRowDataBound="tblorderDetails_RowDataBound">
                     <Columns>
                         <asp:BoundField DataField="PartNumb" HeaderText="Número de Parte" SortExpression="PartNumb" />
                         <asp:BoundField DataField="PartDescription" HeaderText="Descripción" SortExpression="PartDescription" />
                         <asp:BoundField DataField="OrderQnty" HeaderText="Cantidad" SortExpression="Cantidad" />
                         <asp:BoundField DataField="UM" HeaderText="UM" SortExpression="UM" />
+                        <asp:BoundField DataField="Marcado" Visible="false" />
                     </Columns>
                 </asp:GridView>
             </div>

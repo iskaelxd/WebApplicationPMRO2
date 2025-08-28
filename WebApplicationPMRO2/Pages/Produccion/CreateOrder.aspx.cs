@@ -21,7 +21,11 @@ namespace WebApplicationPMRO2.Pages.Produccion
         private const string DEFAULT_IMG = "~/Uploads/Productos/imagenDefault.png";
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            if (Funciones.SesionIniciada() == false)
+            {
+                System.Web.Security.FormsAuthentication.RedirectToLoginPage();
+                return;
+            }
 
 
             if (!IsPostBack)
@@ -84,6 +88,11 @@ namespace WebApplicationPMRO2.Pages.Produccion
                             AreaOrLine = reader["AreaName"].ToString();
                         }
 
+                        if (reader["StatusCode"].ToString() == "LISTO PARA RECOGER")
+                        {
+
+                        }
+
                         dt.Rows.Add(
                             reader["OrderHeaderId"],
                             AreaOrLine,
@@ -94,10 +103,6 @@ namespace WebApplicationPMRO2.Pages.Produccion
                     tblorder.DataSource = dt;
                     tblorder.DataBind(); // ¡No olvides hacer el DataBind!
                 }
-            }
-            catch (SqlException sqlEx)
-            {
-                Funciones.MostrarToast($"Error de base de datos: {sqlEx.Message}", "danger", "top-0 end-0", 3000);
             }
             catch (Exception ex)
             {
@@ -144,19 +149,84 @@ namespace WebApplicationPMRO2.Pages.Produccion
             }
         }
 
+        protected void tblorderDetails_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                // Tomar el DataRowView para leer "Marcado"
+                var drv = (DataRowView)e.Row.DataItem;
+                bool marcado = false;
+
+                if (drv.DataView.Table.Columns.Contains("Marcado"))
+                {
+                    var val = drv["Marcado"];
+                    if (val != DBNull.Value)
+                    {
+                        if (val is bool b) marcado = b;
+                        else marcado = Convert.ToInt32(val) == 1;
+                    }
+                }
+
+                if (marcado)
+                {
+                    // Usa la clase contextual de Bootstrap
+                    e.Row.CssClass = (e.Row.CssClass + " table-success").Trim();
+                    // Si prefieres un color personalizado:
+                    // e.Row.BackColor = System.Drawing.ColorTranslator.FromHtml("#d1e7dd");
+                }
+                else
+                {
+                    e.Row.CssClass = (e.Row.CssClass + " table-danger").Trim();
+                }
+            }
+        }
+
 
         protected void btnEliminar_Click(object sender, EventArgs e)
         {
-            string orderId = hfIdorder.Value;
-            // Aquí puedes agregar la lógica para eliminar la orden de la base de datos
-            FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_OrderHeader]", new[] { "@TransactionCode", "@OrderHeaderId" }, new[] { "D", orderId });
-            Funciones.MostrarToast("Orden eliminada exitosamente.", "success", "top-0 end-0", 3000);
-            LoadData(); // Recargar la lista de órdenes después de eliminar
-            ScriptManager.RegisterStartupScript(this, GetType(), "ocultarModal", @"
+            try
+            {
+                string orderId = hfIdorder.Value;
+                string StatusId = string.Empty;
+
+                using (SqlDataReader reader = FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_OrderHeader]", new[] { "@TransactionCode", "@OrderHeaderId" }, new[] { "S", orderId }))
+                {
+                    if (reader.Read())
+                    {
+                        StatusId = reader["StatusId"].ToString();
+                    }
+                }
+
+                if (StatusId == "6")
+                {
+                    // Aquí puedes agregar la lógica para eliminar la orden de la base de datos
+                    FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_OrderHeader]", new[] { "@TransactionCode", "@OrderHeaderId", "@StatusId " }, new[] { "U", orderId, "7" });
+                    Funciones.MostrarToast("Orden eliminada exitosamente.", "success", "top-0 end-0", 3000);
+                    LoadData(); // Recargar la lista de órdenes después de eliminar
+                    ScriptManager.RegisterStartupScript(this, GetType(), "ocultarModal", @"
                             $('#modalEliminar').modal('hide');
                             $('body').removeClass('modal-open');
                             $('.modal-backdrop').remove();", true);
+                }
+                else
+                {
+                    FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_OrderHeader]", new[] { "@TransactionCode", "@OrderHeaderId" }, new[] { "D", orderId });
+                    Funciones.MostrarToast("Orden eliminada exitosamente.", "success", "top-0 end-0", 3000);
+                    LoadData(); // Recargar la lista de órdenes después de eliminar
+                    ScriptManager.RegisterStartupScript(this, GetType(), "ocultarModal", @"
+                            $('#modalEliminar').modal('hide');
+                            $('body').removeClass('modal-open');
+                            $('.modal-backdrop').remove();", true);
+                }
+            }
+            catch (Exception ex)
+            {
+                Funciones.MostrarToast("Error al eliminar la orden: " + ex.Message, ex.StackTrace + "danger", "top-0 end-0", 3000);
+            }
+
         }
+
+        //Aqui se cargan los detalles de la solicitud del indirecto
         protected void LoadDataDetails(string orderId)
         {
 
@@ -167,6 +237,7 @@ namespace WebApplicationPMRO2.Pages.Produccion
                 dt.Columns.Add("PartDescription", typeof(string));
                 dt.Columns.Add("OrderQnty", typeof(int));
                 dt.Columns.Add("UM", typeof(string));
+                dt.Columns.Add("Marcado", typeof(bool));
                 using (SqlDataReader reader = FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_OrderDetail]", new[] { "@TransactionCode", "@OrderHeaderId" }, new[] { "S", orderId }))
                 {
                     if (reader == null)
@@ -176,11 +247,21 @@ namespace WebApplicationPMRO2.Pages.Produccion
                     }
                     while (reader.Read())
                     {
+                        // "Marcado" viene como bit (0/1). Conviértelo a bool de forma segura.
+                        bool marcado = false;
+                        var val = reader["Marcado"];
+                        if (val != DBNull.Value)
+                        {
+                            if (val is bool b) marcado = b;
+                            else marcado = Convert.ToInt32(val) == 1;
+                        }
+
                         dt.Rows.Add(
                             reader["PartNumb"],
                             reader["PartDescription"],
                             reader["OrderQnty"],
-                            reader["UM"]
+                            reader["UM"],
+                            marcado
                         );
                     }
                     tblorderDetails.DataSource = dt;
@@ -635,7 +716,7 @@ namespace WebApplicationPMRO2.Pages.Produccion
                 {
                     FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_OrderDetail]",
                         new[] { "@TransactionCode", "@OrderHeaderId", "@PartNumb", "@OrderQnty", "@UpdatedBy", "@PrLocation", "@Price", "@PartDescription", "@UM" },
-                        new[] { "I", Id, item.PartNumber, item.OrderQnty, Session["Username"].ToString(), item.PrLocation, item.Price, item.ProductDescription, item.UM });
+                        new[] { "I", Id, item.PartNumber, item.OrderQnty, Session["globalId"].ToString(), item.PrLocation, item.Price, item.ProductDescription, item.UM });
                 }
 
                 Funciones.MostrarToast("Orden creada exitosamente." + Id.ToString(), "success", "top-0 end-0", 3000);
@@ -650,12 +731,6 @@ namespace WebApplicationPMRO2.Pages.Produccion
                 ddlAreaS.Enabled = true;
                 ddlLineaS.Enabled = true;
                 lineaS.Visible = false; // Ocultar el dropdown de línea si no es necesario
-
-                txtNumberPart.Text = string.Empty; // Limpiar el campo de número de parte
-                txtQnty.Text = string.Empty; // Limpiar el campo de cantidad
-                ddlAreaS.SelectedIndex = 0; // Reiniciar el dropdown de área
-                ddlLineaS.SelectedIndex = 0; // Reiniciar el dropdown de línea
-
                 LoadData(); // Recargar la tabla de órdenes para mostrar la nueva orden creada
 
 
@@ -1019,6 +1094,9 @@ namespace WebApplicationPMRO2.Pages.Produccion
         }
 
     }//END
+
+
+
 
 
 }
