@@ -4,12 +4,12 @@
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
 
+      <asp:UpdatePanel ID="UpdatePanel1" runat="server">
+<ContentTemplate>
+
 <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
   <li class="nav-item" role="presentation">
     <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Registrar Numero de Parte</button>
-  </li>
-  <li class="nav-item" role="presentation">
-    <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Actulizar Numero de Parte</button>
   </li>
   <li class="nav-item" role="presentation">
     <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact-tab-pane" type="button" role="tab" aria-controls="contact-tab-pane" aria-selected="false"> Comprador </button>
@@ -119,7 +119,7 @@
     </div>
 
     <div class="col-4 d-flex justify-content">
-        <asp:Button Text="Actualizar" CssClass="btn btn-primary" runat="server" />
+        <asp:Button Text="Actualizar" CssClass="btn btn-primary" runat="server" OnClick="btnUpdateInventory_Click" />
     </div>
 </div>
 
@@ -132,9 +132,6 @@
 
 
   </div>
-  <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
-      <h2>Profile</h2>
-  </div>
   <div class="tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="contact-tab" tabindex="0">
 
       <h2>Comprador</h2>
@@ -144,6 +141,8 @@
   </div>
 </div>
 
+    </ContentTemplate>
+     </asp:UpdatePanel>
 
 </asp:Content>
 
