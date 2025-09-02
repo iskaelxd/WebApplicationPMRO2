@@ -20,6 +20,12 @@ namespace WebApplicationPMRO2.Pages.Almacen
                 LoadDropdownLocacion();
                 LoadBuyers();
                 LoadDropdownCategoria();
+                LoadBuyer();
+                LoadDropdownLocaciones();
+            }
+            else 
+            { 
+                UpdatePanel1.Update();
             }
         }
 
@@ -80,10 +86,21 @@ namespace WebApplicationPMRO2.Pages.Almacen
                         if (reader.Read() && reader["ReturnValue"].ToString() == "-1") 
                         {
                             Funciones.MostrarToast("Datos agregados exitosamente", "success", "top-0 end-0", 3000);
+
+                            txtNumeroParte.Text = string.Empty;
+                            txtInventory.Text = string.Empty;
+                            txtDescripcionNumeroParte.Text = string.Empty;
+                            txtMaxStock.Text = string.Empty;
+                            txtMinStock.Text = string.Empty;
+                            txtUM.Text = string.Empty;
+                            ddlBuyer.SelectedValue = "0";
+                            ddlCategoria.SelectedValue = "0";
+                            ddlLocation.SelectedValue = "0";
                         }
                         else if(reader["ReturnValue"].ToString() == "-800")
                         {
                             Funciones.MostrarToast(reader["Message"].ToString(), "danger", "top-0 end-0", 3000);
+
                         }
 
                       
@@ -163,6 +180,8 @@ namespace WebApplicationPMRO2.Pages.Almacen
                         {
 
                             Funciones.MostrarToast("Inventario actualizado exitosamente", "success", "top-0 end-0", 3000);
+                            txtNumeroParteActualizar.Text = string.Empty;
+                            txtCantidadActualizar.Text = string.Empty;
                         }
 
                     }
@@ -200,10 +219,43 @@ namespace WebApplicationPMRO2.Pages.Almacen
 
         }
 
+
+
+        protected void LoadBuyer()
+        {
+            FuncionesMes.LlenarDropDownList(
+                ddlBuyers,
+                "[dbo].[SP_IndirectMaterials_Buyer]",
+                new[] { "@TransactionCode" },
+                new[] { "S" },
+                "Todos los Compradores",
+                "0",
+                "NombreBuyer",
+                "BuyerId"
+            );
+
+
+        }
+
         private void LoadDropdownLocacion()
         {
             FuncionesMes.LlenarDropDownList(
                 ddlLocation,
+                "[dbo].[SP_IndirectMaterials_Locacion]",
+                new[] { "@TransactionCode" },
+                new[] { "S" },
+                "Todas las locaciones",
+                "0",
+                "NombreLocation",
+                "LocationId"
+            );
+        }
+
+
+        private void LoadDropdownLocaciones()
+        {
+            FuncionesMes.LlenarDropDownList(
+                ddlLocations,
                 "[dbo].[SP_IndirectMaterials_Locacion]",
                 new[] { "@TransactionCode" },
                 new[] { "S" },
@@ -231,9 +283,307 @@ namespace WebApplicationPMRO2.Pages.Almacen
         }
 
 
+        protected void ddlComprador_SelectedIndexChanged( object sender, EventArgs e) 
+        {
+
+          
+
+            if (ddlBuyers.SelectedValue != "0")
+            {
+                txtBuyer.Text = ddlBuyers.SelectedItem.Text;
+                ///txtBuyer.Enabled = false;
+            }
+            else
+            {
+                txtBuyer.Text = string.Empty;
+                //txtBuyer.Enabled = true;
+            }
+
+        }
+
+        protected void btnGuardarBuyer_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (txtBuyer.Text == "")
+                {
+                    Funciones.MostrarToast("Ingrese el nombre del comprador", "danger", "top-0 end-0", 3000);
+                    return;
+                }else if(ddlBuyers.SelectedValue != "0")
+                {
+                    Funciones.MostrarToast("Para agregar un comprador no debe seleccionar ninguno", "danger", "top-0 end-0", 3000);
+                    return;
+                }
+                else
+                {
+                    using (SqlDataReader reader = FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_Buyer]",
+                    new[] { "@NombreBuyer", "@TransactionCode" },
+                    new[] { txtBuyer.Text, "I" }))
+                    {
+                        //ReturnValue
+                        if (reader.Read() && reader["ReturnValue"].ToString() == "-1")
+                        {
+                            Funciones.MostrarToast("Datos agregados exitosamente", "success", "top-0 end-0", 3000);
+                            txtBuyer.Text = string.Empty;
+                            LoadBuyers();
+                            LoadBuyer();
+                            ddlBuyers.SelectedValue = "0";
+                        }
+                        else if (reader["ReturnValue"].ToString() == "-800")
+                        {
+                            Funciones.MostrarToast(reader["Message"].ToString(), "danger", "top-0 end-0", 3000);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex) 
+            {
+                Funciones.MostrarToast("Error al guardar los datos: " + ex.Message, "danger", "top-0 end-0", 3000);
+            }
+        }
 
 
 
+        protected void btnUpdateBuyer_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (txtBuyer.Text == "")
+                {
+                    Funciones.MostrarToast("Ingrese el nombre del comprador", "danger", "top-0 end-0", 3000);
+                    return;
+                }
+                else if (ddlBuyers.SelectedValue == "0")
+                {
+                    Funciones.MostrarToast("Para actualizar un comprador debe seleccionar uno", "danger", "top-0 end-0", 3000);
+                    return;
+                }
+                else
+                {
+                    using (SqlDataReader reader = FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_Buyer]",
+                    new[] { "@BuyerId", "@NombreBuyer", "@TransactionCode" },
+                    new[] { ddlBuyers.SelectedValue, txtBuyer.Text, "U" }))
+                    {
+                        //ReturnValue
+                        if (reader.Read() && reader["ReturnValue"].ToString() == "-1")
+                        {
+                            Funciones.MostrarToast("Datos actualizados exitosamente", "success", "top-0 end-0", 3000);
+                            txtBuyer.Text = string.Empty;
+                            LoadBuyers();
+                            LoadBuyer();
+                            ddlBuyers.SelectedValue = "0";
+                        }
+                        else if (reader["ReturnValue"].ToString() == "-800")
+                        {
+                            Funciones.MostrarToast(reader["Message"].ToString(), "danger", "top-0 end-0", 3000);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Funciones.MostrarToast("Error al actualizar los datos: " + ex.Message, "danger", "top-0 end-0", 3000);
+            }
+        }
 
-    }//END
+        protected void btnEliminarBuyer_Click(object sender, EventArgs e)
+        {
+            try
+            {
+
+                if (txtBuyer.Text == "")
+                {
+                    Funciones.MostrarToast("Ingrese el nombre del comprador", "danger", "top-0 end-0", 3000);
+                    return;
+                }
+                else if (ddlBuyers.SelectedValue == "0")
+                {
+                    Funciones.MostrarToast("Para actualizar un comprador debe seleccionar uno", "danger", "top-0 end-0", 3000);
+                    return;
+                }
+                else
+                {
+                    using (SqlDataReader reader = FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_Buyer]",
+                    new[] { "@BuyerId", "@TransactionCode" },
+                    new[] { ddlBuyers.SelectedValue, "D" }))
+                    {
+                        //ReturnValue
+                        if (reader.Read() && reader["ReturnValue"].ToString() == "-1")
+                        {
+                            Funciones.MostrarToast("Datos actualizados exitosamente", "success", "top-0 end-0", 3000);
+                            txtBuyer.Text = string.Empty;
+
+                            LoadBuyers();
+                            LoadBuyer();
+                            ddlBuyers.SelectedValue = "0";
+                        }
+                        else if (reader["ReturnValue"].ToString() == "-800")
+                        {
+                            Funciones.MostrarToast(reader["Message"].ToString(), "danger", "top-0 end-0", 3000);
+                        }
+                    }
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                Funciones.MostrarToast("Error al eliminar los datos: " + ex.Message, "danger", "top-0 end-0", 3000);
+            }
+        }
+
+
+        protected void btnSaveLocation_Click(object sender, EventArgs e)
+        {
+
+            try
+            {
+                if (txtLocation.Text == "")
+                {
+                    Funciones.MostrarToast("Ingrese el nombre de la locacion", "danger", "top-0 end-0", 3000);
+                    return;
+                }
+                else if (ddlLocations.SelectedValue != "0")
+                {
+                    Funciones.MostrarToast("Para agregar una locacion no debe seleccionar ninguna", "danger", "top-0 end-0", 3000);
+                    return;
+                }
+                else
+                {
+                    using (SqlDataReader reader = FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_Locacion]",
+                    new[] { "@NombreLocation", "@TransactionCode" },
+                    new[] { txtLocation.Text, "I" }))
+                    {
+                        //ReturnValue
+                        if (reader.Read() && reader["ReturnValue"].ToString() == "-1")
+                        {
+                            Funciones.MostrarToast("Datos agregados exitosamente", "success", "top-0 end-0", 3000);
+                            txtLocation.Text = string.Empty;
+                            LoadDropdownLocacion();
+                            LoadDropdownLocaciones();
+                            ddlLocations.SelectedValue = "0";
+                        }
+                        else if (reader["ReturnValue"].ToString() == "-800")
+                        {
+                            Funciones.MostrarToast(reader["Message"].ToString(), "danger", "top-0 end-0", 3000);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Funciones.MostrarToast("Error al guardar los datos: " + ex.Message, "danger", "top-0 end-0", 3000);
+            }
+        }
+
+
+
+        protected void ddlLocations_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (ddlLocations.SelectedValue != "0")
+            {
+                txtLocation.Text = ddlLocations.SelectedItem.Text;
+                ///txtBuyer.Enabled = false;
+            }
+            else
+            {
+                txtLocation.Text = string.Empty;
+                //txtBuyer.Enabled = true;
+            }
+        }   
+
+
+        protected void btnEditLocation_Click(object sender, EventArgs e) 
+        {
+            try
+            {
+
+                if (txtLocation.Text == "")
+                {
+                    Funciones.MostrarToast("Ingrese el nombre de la locacion", "danger", "top-0 end-0", 3000);
+                    return;
+                }
+                else if (ddlLocations.SelectedValue == "0")
+                {
+                    Funciones.MostrarToast("Para actualizar una locacion debe seleccionar una", "danger", "top-0 end-0", 3000);
+                    return;
+                }
+                else
+                {
+                    using (SqlDataReader reader = FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_Locacion]",
+                    new[] { "@LocationId", "@NombreLocation", "@TransactionCode" },
+                    new[] { ddlLocations.SelectedValue, txtLocation.Text, "U" }))
+                    {
+                        //ReturnValue
+                        if (reader.Read() && reader["ReturnValue"].ToString() == "-1")
+                        {
+                            Funciones.MostrarToast("Datos actualizados exitosamente", "success", "top-0 end-0", 3000);
+                            txtLocation.Text = string.Empty;
+                            LoadDropdownLocacion();
+                            LoadDropdownLocaciones();
+                            ddlLocations.SelectedValue = "0";
+                        }
+                        else if (reader["ReturnValue"].ToString() == "-800")
+                        {
+                            Funciones.MostrarToast(reader["Message"].ToString(), "danger", "top-0 end-0", 3000);
+                        }
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Funciones.MostrarToast("Error al actualizar los datos: " + ex.Message, "danger", "top-0 end-0", 3000);
+            }
+            
+
+        }
+
+
+        protected void btnEliminarLocation_Click(object sender, EventArgs e)
+        {
+
+            try
+            {
+                if (txtLocation.Text == "")
+                {
+                    Funciones.MostrarToast("Ingrese el nombre de la locacion", "danger", "top-0 end-0", 3000);
+                    return;
+                }
+                else if (ddlLocations.SelectedValue == "0")
+                {
+                    Funciones.MostrarToast("Para actualizar una locacion debe seleccionar una", "danger", "top-0 end-0", 3000);
+                    return;
+                }
+                else
+                {
+                    using (SqlDataReader reader = FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_Locacion]",
+                    new[] { "@LocationId", "@TransactionCode" },
+                    new[] { ddlLocations.SelectedValue, "D" }))
+                    {
+                        //ReturnValue
+                        if (reader.Read() && reader["ReturnValue"].ToString() == "-1")
+                        {
+                            Funciones.MostrarToast("Datos actualizados exitosamente", "success", "top-0 end-0", 3000);
+                            txtLocation.Text = string.Empty;
+                            LoadDropdownLocacion();
+                            LoadDropdownLocaciones();
+                            ddlLocations.SelectedValue = "0";
+                        }
+                        else if (reader["ReturnValue"].ToString() == "-800")
+                        {
+                            Funciones.MostrarToast(reader["Message"].ToString(), "danger", "top-0 end-0", 3000);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex) {
+            
+                Funciones.MostrarToast("Error al eliminar los datos: " + ex.Message, "danger", "top-0 end-0", 3000);
+            }
+        }
+
+
+
+            }//END
 }

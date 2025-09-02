@@ -10,6 +10,9 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using WebApplicationPMRO2.Utilities;
 using WebApplicationPMRO2.Pages.Produccion;
+using System.Configuration;
+using System.Net.Mail;
+using System.Text;
 
 namespace WebApplicationPMRO2.Pages.Almacen
 {
@@ -291,6 +294,8 @@ namespace WebApplicationPMRO2.Pages.Almacen
         {
             try
             {
+                SendMail(hdnOrderId.Value, "4");
+
                 // Aquí puedes implementar la lógica para entregar la orden
                 // Por ejemplo, cambiar el estado de la orden a "Entregado"
                 using (FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_OrderHeader]",
@@ -305,7 +310,10 @@ namespace WebApplicationPMRO2.Pages.Almacen
                     Funciones.MostrarToast("Orden entregada correctamente.", "success", "top-0 end-0", 3000);
                     LoadData(); // Recargar la lista de órdenes
                     MostrarListado(); // Volver a la vista de listado
+                    
                 }
+
+               
 
             }
             catch (Exception ex)
@@ -615,6 +623,8 @@ namespace WebApplicationPMRO2.Pages.Almacen
 
                 }
 
+
+                SendMail(hdnOrderId.Value, "6");
                 //Funciones.MostrarToast($"Orden marcada como Listo para recoger", "success", "top-0 end-0", 2000);
 
             }
@@ -646,6 +656,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
 
                 gvDetalle.Enabled = false; // Deshabilitar la grilla para evitar cambios
                 CargarDetalle(int.Parse(hdnOrderId.Value));
+                SendMail(hdnOrderId.Value,"5");
             }
             catch (Exception ex)
             {
@@ -698,6 +709,111 @@ namespace WebApplicationPMRO2.Pages.Almacen
                 Funciones.MostrarToast($"Error al guardar selección: {ex.Message}", "danger", "top-0 end-0", 3000);
             }
         }
+
+        //CORREO
+
+        protected void SendMail(string OrderId, string status)
+        {
+            string email = string.Empty;
+            string nombre = string.Empty;
+            string estate = string.Empty;
+
+            if (status == "5")
+                estate = "SIN INVENTARIO";
+            else if (status == "6")
+                estate = "LISTO PARA RECOGER";
+            else if (status == "4")
+                estate = "ENTREGADO";
+
+            using (SqlDataReader reader = FuncionesMes.ExecuteReader(
+                "[dbo].[SP_IndirectMaterials_OrderHeader]",
+                new[] { "@TransactionCode", "@OrderHeaderId" },
+                new[] { "S", OrderId.ToString() }))
+            {
+                if (reader != null && reader.Read())
+                {
+                    email = reader["Correo"].ToString();
+                    nombre = reader["UpdatedBy"].ToString();
+                }
+                else
+                {
+                    Funciones.MostrarToast("No se encontró la orden.", "warning", "top-0 end-0", 3000);
+                    MostrarListado();
+                    return;
+                }
+            }
+
+            // Obtener detalles desde ViewState
+            DataTable dt = ViewState["DetalleDT"] as DataTable;
+            if (dt == null || dt.Rows.Count == 0)
+            {
+                Funciones.MostrarToast("No hay detalles para enviar.", "warning", "top-0 end-0", 3000);
+                return;
+            }
+
+            // Construir cuerpo del correo
+            StringBuilder sb = new StringBuilder();
+            sb.Append("<html><body style='font-family: Arial, sans-serif; color: #333;'>");
+            sb.Append("<h2 style='color: #333;'>Actualización de Orden</h2>");
+            sb.AppendFormat("<p><strong>Order ID:</strong> {0}</p>", OrderId);
+            sb.AppendFormat("<p><strong>Empleado:</strong> {0}</p>", nombre);
+            sb.AppendFormat("<p><strong>Estado:</strong> {0}</p>", estate);
+            sb.Append("<p>Detalles de la orden:</p>");
+            sb.Append("<table style='width:100%; border-collapse: collapse; margin-bottom: 20px;'>");
+            sb.Append("<tr style='background-color:#f2f2f2;'>");
+            sb.Append("<th style='border: 1px solid #ddd; padding: 8px;'>Part Number</th>");
+            sb.Append("<th style='border: 1px solid #ddd; padding: 8px;'>Cantidad</th>");
+            sb.Append("<th style='border: 1px solid #ddd; padding: 8px;'>Descripción</th>");
+            sb.Append("</tr>");
+
+            foreach (DataRow row in dt.Rows)
+            {
+                sb.Append("<tr>");
+                sb.AppendFormat("<td style='border: 1px solid #ddd; padding: 8px;'>{0}</td>", row["PartNumb"]);
+                sb.AppendFormat("<td style='border: 1px solid #ddd; padding: 8px; text-align:center;'>{0}</td>", row["OrderQnty"]);
+                sb.AppendFormat("<td style='border: 1px solid #ddd; padding: 8px;'>{0}</td>", row["PartDescription"]);
+                sb.Append("</tr>");
+            }
+
+            sb.Append("</table>");
+            sb.Append("</body></html>");
+
+            // Configurar y enviar el correo
+            try
+            {
+                string smtpServer = ConfigurationManager.AppSettings["SMTPServer"];
+                int smtpPort = int.Parse(ConfigurationManager.AppSettings["SMTPPort"]);
+                string mailAccount = ConfigurationManager.AppSettings["MailAcount"];
+                string mailAccountName = ConfigurationManager.AppSettings["MailAcountName"];
+
+                MailMessage mail = new MailMessage();
+                mail.From = new MailAddress(mailAccount, mailAccountName);
+                mail.To.Add(email);
+                mail.Subject = "Actualización de Orden";
+                mail.Body = sb.ToString();
+                mail.IsBodyHtml = true;
+
+                SmtpClient smtpClient = new SmtpClient(smtpServer, smtpPort)
+                {
+                    DeliveryMethod = SmtpDeliveryMethod.Network,
+                    EnableSsl = false,
+                    UseDefaultCredentials = true
+                };
+
+                smtpClient.Send(mail);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al enviar el correo: " + ex.Message);
+            }
+        }
+
+
+
+
+        //END CORREO
+
+
 
 
     }//end

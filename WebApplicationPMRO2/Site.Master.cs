@@ -36,27 +36,42 @@ namespace WebApplicationPMRO2
 
         protected void LoadMenu()
         {
-            List<MenuItemBD> menuItems = ObtenerMenuBD(Session["Rol"].ToString());
-
-
-            foreach (var item in menuItems)
+            try
             {
-                HyperLink link = new HyperLink
+                List<MenuItemBD> menuItems = ObtenerMenuBD(Session["Rol"].ToString());
+
+
+                foreach (var item in menuItems)
                 {
-                    CssClass = "nav-link px-3 d-flex gap-2 align-items-center",
-                    NavigateUrl = item.Url,
-                    Text = $"<i class='{item.Icono}'></i> <span>{item.Titulo}</span>",
-                    ID = "menu_" + item.MenuId
-                };
-                phMenuItems.Controls.Add(link);
+                    HyperLink link = new HyperLink
+                    {
+                        CssClass = "nav-link px-3 d-flex gap-2 align-items-center",
+                        NavigateUrl = item.Url,
+                        Text = $"<i class='{item.Icono}'></i> <span>{item.Titulo}</span>",
+                        ID = "menu_" + item.MenuId
+                    };
+                    phMenuItems.Controls.Add(link);
+                }
+            }
+            catch (Exception ex)
+            {
+                Funciones.MostrarToast("No se pudo cargar el menú: " + ex.Message,"danger", "top-0 end-0", 3000);
+                Response.Redirect("~/Pages/Login.aspx");
             }
 
 
-        }
+            }
 
 
         private List<MenuItemBD> ObtenerMenuBD( string rol)
         {
+
+            if (string.IsNullOrEmpty(rol))
+            {
+                Response.Redirect("~/Pages/Login.aspx");
+            }
+
+
             List<MenuItemBD> items = new List<MenuItemBD>();
 
             using (SqlDataReader reader = Funciones.ExecuteReader("[Administracion].[SP_MenuPermisos]", new[] { "@UsuarioId", "@TransactionCode" }, new[] {rol,"S"} ))

@@ -4,7 +4,7 @@
 
 
     <style>
-        .card-img-top {
+.card-img-top {
     width: 100%;
     height: 200px;
     object-fit: contain;
@@ -13,7 +13,7 @@
 }
 
 
-        .card {
+.card {
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     transition: transform 0.2s ease-in-out;
     border-radius: 10px;

@@ -43,6 +43,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AjaxControlToolkit, Version=20.1.0.0, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e, processorArchitecture=MSIL">
+      <HintPath>..\packages\AjaxControlToolkit.20.1.0\lib\net40\AjaxControlToolkit.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=3.6.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
@@ -154,7 +157,6 @@
     <Content Include="Pages\Compras\OrdenesCompra.aspx" />
     <Content Include="Pages\Compras\Proveedores.aspx" />
     <Content Include="Pages\Login.aspx" />
-    <Content Include="Pages\Produccion\AddEmpleado.aspx" />
     <Content Include="Pages\Produccion\CreateOrder.aspx" />
     <Content Include="Pages\Produccion\Reports.aspx" />
     <Content Include="Scripts\bootstrap.bundle.js" />
@@ -349,13 +351,6 @@
     </Compile>
     <Compile Include="Pages\Login.aspx.designer.cs">
       <DependentUpon>Login.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\Produccion\AddEmpleado.aspx.cs">
-      <DependentUpon>AddEmpleado.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Pages\Produccion\AddEmpleado.aspx.designer.cs">
-      <DependentUpon>AddEmpleado.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pages\Produccion\CreateOrder.aspx.cs">
       <DependentUpon>CreateOrder.aspx</DependentUpon>

@@ -4,8 +4,6 @@
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
 
-      <asp:UpdatePanel ID="UpdatePanel1" runat="server">
-<ContentTemplate>
 
 <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
   <li class="nav-item" role="presentation">
@@ -21,6 +19,9 @@
 <div class="tab-content" id="myTabContent">
   <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
 
+
+    <asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Conditional">
+    <ContentTemplate>
               <div class="row align-items-center mb-5">
             <div class="col-6">
                 <h2>Números de Parte</h2>
@@ -129,20 +130,106 @@
 
 </asp:MultiView>
 
-
+</ContentTemplate>
+</asp:UpdatePanel>
 
   </div>
+
   <div class="tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="contact-tab" tabindex="0">
 
+      
+<asp:UpdatePanel ID="UpdatePanelComprador" runat="server" UpdateMode="Conditional">
+    <ContentTemplate>
+
+
       <h2>Comprador</h2>
+
+      <div class="row mt-5">
+
+        <div class="col-4">
+         <label>Ingresa Nombre de comprador</label>
+          <asp:TextBox ID="txtBuyer" runat="server" CssClass="form-control" placeholder="Nombre del Comprador"></asp:TextBox>
+            </div>
+
+          <div class="col-4">
+              <label>Selecciona un comprador </label>
+              <asp:DropDownList ID="ddlBuyers" runat="server" cssClass="form-select" OnSelectedIndexChanged="ddlComprador_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
+          </div>
+
+      </div>
+
+      <div class="row mt-4">
+
+          <div class="col-auto">
+          <asp:Button ID="btnGuardarBuyer" runat="server" Text="Guardar Comprador" CssClass="btn btn-success" OnClick="btnGuardarBuyer_Click"  />
+         </div>
+
+           <div class="col-auto">
+             <asp:Button ID="btnComprador" runat="server" Text="Actualizar Comprador" CssClass="btn btn-primary" OnClick="btnUpdateBuyer_Click" />
+            </div>
+
+           <div class="col-auto">
+           <asp:Button ID="btnEliminar" runat="server" Text="Eliminar Comprador" CssClass="btn btn-danger" OnClick="btnEliminarBuyer_Click" />
+          </div>
+
+      </div>
+
+        
+</ContentTemplate>
+</asp:UpdatePanel>
+
   </div>
   <div class="tab-pane fade" id="disabled-tab-pane" role="tabpanel" aria-labelledby="disabled-tab" tabindex="0">
+
+      <asp:UpdatePanel ID="UpdatePanel2" runat="server" UpdateMode="Conditional">
+    <ContentTemplate>
+
       <h2>Locacion</h2>
+
+      <div class="row mt-5">
+
+          <div class="col-4">
+          <label>Ingrese una Locacion</label>
+          <asp:TextBox ID="txtLocation" runat="server" CssClass="form-control" placeholder="Locacion"></asp:TextBox>
+         </div>
+
+          <div class="col-4">
+              <label>Selecciones una locacion </label>
+              <asp:DropDownList ID="ddlLocations" runat="server" CssClass="form-select" OnSelectedIndexChanged="ddlLocations_SelectedIndexChanged" AutoPostBack="true">
+              </asp:DropDownList>
+
+          </div>
+
+      </div>
+
+
+      <div class="row mt-4">
+
+          <div class="col-auto">
+              <asp:Button ID="btnGuardarLocation" runat="server" Text="Guardar Locacion" CssClass="btn btn-success" OnClick="btnSaveLocation_Click" />
+          </div>
+
+           <div class="col-auto">
+            <asp:Button ID="btnEditarLocacion" runat="server" Text="Editar Locacion" CssClass="btn btn-primary" OnClick="btnEditLocation_Click" />
+            </div>
+
+          <div class="col-auto">
+             <asp:Button ID="btnEliminarLocacion" runat="server" Text="Eliminar Locacion" CssClass="btn btn-danger" OnClick="btnEliminarLocation_Click" />
+             </div>
+
+      </div>
+
+
+
+
+
   </div>
+
+        </ContentTemplate>
+</asp:UpdatePanel>
+
 </div>
 
-    </ContentTemplate>
-     </asp:UpdatePanel>
 
 </asp:Content>
 
