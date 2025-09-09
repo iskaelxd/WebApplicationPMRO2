@@ -57,7 +57,7 @@ namespace WebApplicationPMRO2.Pages.Produccion
 
                 var resultados = new List<ReporteRow>();
 
-                using (SqlDataReader reader = FuncionesMes.ExecuteReader(
+                using (SqlDataReader reader = Funciones.ExecuteReader(
                     "[dbo].[SP_IndirectMaterials_OrderDetail]",
                     paramNames,
                     paramValues))

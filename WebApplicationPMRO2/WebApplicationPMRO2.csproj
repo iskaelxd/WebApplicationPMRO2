@@ -153,6 +153,7 @@
     <Content Include="Pages\Almacen\Movimientos.aspx" />
     <Content Include="Pages\Almacen\Recepciones.aspx" />
     <Content Include="Pages\Almacen\Reportes.aspx" />
+    <Content Include="Pages\Almacen\Seguimiento_Solicitud.aspx" />
     <Content Include="Pages\Almacen\Solicitudes.aspx" />
     <Content Include="Pages\Compras\OrdenesCompra.aspx" />
     <Content Include="Pages\Compras\Proveedores.aspx" />
@@ -323,6 +324,13 @@
     </Compile>
     <Compile Include="Pages\Almacen\Reportes.aspx.designer.cs">
       <DependentUpon>Reportes.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Almacen\Seguimiento_Solicitud.aspx.cs">
+      <DependentUpon>Seguimiento_Solicitud.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Almacen\Seguimiento_Solicitud.aspx.designer.cs">
+      <DependentUpon>Seguimiento_Solicitud.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pages\Almacen\Solicitudes.aspx.cs">
       <DependentUpon>Solicitudes.aspx</DependentUpon>

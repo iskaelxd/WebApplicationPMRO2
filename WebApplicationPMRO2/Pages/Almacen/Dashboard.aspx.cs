@@ -35,7 +35,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
 
 
 
-                using (SqlDataReader reader = FuncionesMes.ExecuteReader("[dbo].[SP_Indirect_Dashboard]", new[] { "@TransactionCode" }, new[] { "SC" }))
+                using (SqlDataReader reader = Funciones.ExecuteReader("[dbo].[SP_Indirect_Dashboard]", new[] { "@TransactionCode" }, new[] { "SC" }))
                 {
                     if (reader == null)
                     {

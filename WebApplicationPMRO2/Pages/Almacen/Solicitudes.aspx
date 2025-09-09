@@ -191,6 +191,100 @@
 
           </asp:MultiView>
 
+
+    <asp:Button ID="btnSignalRListRefresh" runat="server"
+    Style="display:none" UseSubmitBehavior="false"
+    OnClick="btnSignalRListRefresh_Click" />
+
+<asp:Button ID="btnSignalRDetailRefresh" runat="server"
+    Style="display:none" UseSubmitBehavior="false"
+    OnClick="btnSignalRDetailRefresh_Click" />
+
+
+    <script>
+        (function () {
+            var POLL_MS = 8000; // refresco cada 8s
+            var timer = null;
+            var pausedReasons = new Set(); // razones activas de pausa (detail, search, postback)
+
+            function byId(id) { return document.getElementById(id); }
+            function isVisible(el) { return !!(el && el.offsetParent !== null); }
+
+            // Detectores de estado
+            function isListVisible() { return !!byId('<%= tblorder.ClientID %>'); }
+    function isDetailVisible() { return !!byId('<%= gvDetalle.ClientID %>'); }
+    function hasSearch() {
+        var tb = byId('<%= txtBuscarOrden.ClientID %>');
+    return tb && tb.value.trim() !== '';
+  }
+  function modalOpen(){ return !!document.querySelector('.modal.show'); }
+
+  // Solo podemos refrescar cuando estamos en list, sin búsqueda y sin pausas
+  function canPoll(){
+    return isListVisible() && !isDetailVisible() && !hasSearch() && !modalOpen() && pausedReasons.size === 0;
+  }
+
+  function safePostback(btnClientId){
+    var el = byId(btnClientId);
+    if (!el || !canPoll()) return;
+    if (typeof window.__doPostBack === 'function' && el.name) {
+      window.__doPostBack(el.name, '');
+    } else {
+      el.click();
+    }
+  }
+
+  function tick(){ safePostback('<%= btnSignalRListRefresh.ClientID %>'); }
+
+  function start(){ stop(); timer = setInterval(tick, POLL_MS); }
+  function stop(){ if (timer){ clearInterval(timer); timer = null; } }
+
+  function pause(reason){ pausedReasons.add(reason || 'manual'); }
+  function resume(reason){
+    if (reason) pausedReasons.delete(reason);
+    else pausedReasons.clear();
+  }
+
+  // PRM: pausar durante postbacks y re-evaluar al terminar
+  if (window.Sys && Sys.WebForms && Sys.WebForms.PageRequestManager) {
+    var prm = Sys.WebForms.PageRequestManager.getInstance();
+    prm.add_beginRequest(function(){ pause('postback'); });
+    prm.add_endRequest(function(){
+      resume('postback');
+      // (Re)aplicar pausas según UI actual
+      if (isDetailVisible()) pause('detail'); else resume('detail');
+      if (hasSearch())       pause('search'); else resume('search');
+      start();
+    });
+  }
+
+  // Iniciar al cargar
+  document.addEventListener('DOMContentLoaded', function(){
+    if (isDetailVisible()) pause('detail');
+    if (hasSearch())       pause('search');
+    start();
+
+    // Si limpian la caja de búsqueda, reanudar automáticamente; si escriben, pausar
+    var tb = byId('<%= txtBuscarOrden.ClientID %>');
+      if (tb) {
+          tb.addEventListener('input', function () {
+              if (tb.value.trim() === '') resume('search'); else pause('search');
+          });
+      }
+  });
+
+            // Exporta API para usar desde botones (opcional)
+            window.polling = {
+                pause: pause,    // polling.pause('motivo')
+                resume: resume,  // polling.resume('motivo') o sin args para limpiar todo
+                stop: stop,
+                start: start
+            };
+        })();
+    </script>
+
+
+
                  </ContentTemplate>
 
 </asp:UpdatePanel>

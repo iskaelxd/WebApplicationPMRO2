@@ -22,6 +22,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
                 LoadDropdownCategoria();
                 LoadBuyer();
                 LoadDropdownLocaciones();
+                LoadDropdownCategorias();
             }
             else 
             { 
@@ -77,7 +78,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
                 else
                 {
 
-                    using (SqlDataReader reader = FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_Products]",
+                    using (SqlDataReader reader = Funciones.ExecuteReader("[dbo].[SP_IndirectMaterials_Products]",
                     new[] { "@ProductDescription", "@PartNumb", "@MinStock", "@MaxStock", "@Inventory", "@Location", "@Price", "@CategoryId", "@UM", "@Buyer", "UpdatedBy", "@TransactionCode" },
                     new[] { txtDescripcionNumeroParte.Text, txtNumeroParte.Text, txtMinStock.Text, txtMaxStock.Text, txtInventory.Text, ddlLocation.SelectedValue, "0.0", ddlCategoria.SelectedValue, txtUM.Text, ddlBuyer.SelectedValue, Session["globalId"].ToString(),"I" }))
                     {
@@ -149,7 +150,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
                 }
                 else
                 {
-                    using (SqlDataReader reader = FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_Products]",
+                    using (SqlDataReader reader = Funciones.ExecuteReader("[dbo].[SP_IndirectMaterials_Products]",
                     new[] { "@PartNumb", "@TransactionCode" },
                     new[] { txtNumeroParteActualizar.Text, "S" }))
                     {
@@ -172,7 +173,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
 
 
 
-                    using (SqlDataReader reader = FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_Products]",
+                    using (SqlDataReader reader = Funciones.ExecuteReader("[dbo].[SP_IndirectMaterials_Products]",
                    new[] { "@PartNumb","@UpdatedBy" , "@Inventory", "@TransactionCode" },
                    new[] { txtNumeroParteActualizar.Text, Session["globalId"],currentInventory.ToString() ,"U" }))
                     {
@@ -205,7 +206,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
 
         protected void LoadBuyers()
         {
-            FuncionesMes.LlenarDropDownList(
+            Funciones.LlenarDropDownList(
                 ddlBuyer,
                 "[dbo].[SP_IndirectMaterials_Buyer]",
                 new[] { "@TransactionCode" },
@@ -223,7 +224,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
 
         protected void LoadBuyer()
         {
-            FuncionesMes.LlenarDropDownList(
+            Funciones.LlenarDropDownList(
                 ddlBuyers,
                 "[dbo].[SP_IndirectMaterials_Buyer]",
                 new[] { "@TransactionCode" },
@@ -239,7 +240,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
 
         private void LoadDropdownLocacion()
         {
-            FuncionesMes.LlenarDropDownList(
+            Funciones.LlenarDropDownList(
                 ddlLocation,
                 "[dbo].[SP_IndirectMaterials_Locacion]",
                 new[] { "@TransactionCode" },
@@ -254,7 +255,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
 
         private void LoadDropdownLocaciones()
         {
-            FuncionesMes.LlenarDropDownList(
+            Funciones.LlenarDropDownList(
                 ddlLocations,
                 "[dbo].[SP_IndirectMaterials_Locacion]",
                 new[] { "@TransactionCode" },
@@ -270,7 +271,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
 
         private void LoadDropdownCategoria()
         {
-            FuncionesMes.LlenarDropDownList(
+            Funciones.LlenarDropDownList(
                 ddlCategoria,
                 "[dbo].[SP_IndirectMaterials_Category]",
                 new[] { "@TransactionCode" },
@@ -282,6 +283,20 @@ namespace WebApplicationPMRO2.Pages.Almacen
             );
         }
 
+
+        private void LoadDropdownCategorias()
+        {
+            Funciones.LlenarDropDownList(
+                ddlCategorias,
+                "[dbo].[SP_IndirectMaterials_Category]",
+                new[] { "@TransactionCode" },
+                new[] { "S" },
+                "Todas las categorias",
+                "0",
+                "CategoryName",
+                "CategoryId"
+            );
+        }
 
         protected void ddlComprador_SelectedIndexChanged( object sender, EventArgs e) 
         {
@@ -316,7 +331,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
                 }
                 else
                 {
-                    using (SqlDataReader reader = FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_Buyer]",
+                    using (SqlDataReader reader = Funciones.ExecuteReader("[dbo].[SP_IndirectMaterials_Buyer]",
                     new[] { "@NombreBuyer", "@TransactionCode" },
                     new[] { txtBuyer.Text, "I" }))
                     {
@@ -360,7 +375,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
                 }
                 else
                 {
-                    using (SqlDataReader reader = FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_Buyer]",
+                    using (SqlDataReader reader = Funciones.ExecuteReader("[dbo].[SP_IndirectMaterials_Buyer]",
                     new[] { "@BuyerId", "@NombreBuyer", "@TransactionCode" },
                     new[] { ddlBuyers.SelectedValue, txtBuyer.Text, "U" }))
                     {
@@ -403,7 +418,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
                 }
                 else
                 {
-                    using (SqlDataReader reader = FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_Buyer]",
+                    using (SqlDataReader reader = Funciones.ExecuteReader("[dbo].[SP_IndirectMaterials_Buyer]",
                     new[] { "@BuyerId", "@TransactionCode" },
                     new[] { ddlBuyers.SelectedValue, "D" }))
                     {
@@ -450,7 +465,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
                 }
                 else
                 {
-                    using (SqlDataReader reader = FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_Locacion]",
+                    using (SqlDataReader reader = Funciones.ExecuteReader("[dbo].[SP_IndirectMaterials_Locacion]",
                     new[] { "@NombreLocation", "@TransactionCode" },
                     new[] { txtLocation.Text, "I" }))
                     {
@@ -510,7 +525,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
                 }
                 else
                 {
-                    using (SqlDataReader reader = FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_Locacion]",
+                    using (SqlDataReader reader = Funciones.ExecuteReader("[dbo].[SP_IndirectMaterials_Locacion]",
                     new[] { "@LocationId", "@NombreLocation", "@TransactionCode" },
                     new[] { ddlLocations.SelectedValue, txtLocation.Text, "U" }))
                     {
@@ -557,7 +572,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
                 }
                 else
                 {
-                    using (SqlDataReader reader = FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_Locacion]",
+                    using (SqlDataReader reader = Funciones.ExecuteReader("[dbo].[SP_IndirectMaterials_Locacion]",
                     new[] { "@LocationId", "@TransactionCode" },
                     new[] { ddlLocations.SelectedValue, "D" }))
                     {
@@ -572,7 +587,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
                         }
                         else if (reader["ReturnValue"].ToString() == "-800")
                         {
-                            Funciones.MostrarToast(reader["Message"].ToString(), "danger", "top-0 end-0", 3000);
+                            Funciones.MostrarToast("MENSAJE " + reader["Message"].ToString(), "danger", "top-0 end-0", 3000);
                         }
                     }
                 }
@@ -585,5 +600,138 @@ namespace WebApplicationPMRO2.Pages.Almacen
 
 
 
-            }//END
+        protected void ddlCategorias_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (ddlCategorias.SelectedValue != "0")
+            {
+                txtCategoria.Text = ddlCategorias.SelectedItem.Text;
+                ///txtBuyer.Enabled = false;
+            }
+            else
+            {
+                txtCategoria.Text = string.Empty;
+                //txtBuyer.Enabled = true;
+            }
+        }
+
+
+
+
+        protected void btnGuardarCategoria_Click(object sender, EventArgs e) 
+        {
+
+            try
+            {
+                if (txtCategoria.Text == "")
+                {
+                    Funciones.MostrarToast("Ingrese el nombre de la categoria", "danger", "top-0 end-0", 3000);
+                    return;
+                }
+                else if (ddlCategorias.SelectedValue != "0")
+                {
+                    Funciones.MostrarToast("Para agregar una categoria no debe seleccionar ninguna", "danger", "top-0 end-0", 3000);
+                    return;
+                }
+
+
+               using (SqlDataReader reader = Funciones.ExecuteReader("[dbo].[SP_IndirectMaterials_Category]", new[] { "@TransactionCode", "@CategoryName", "@UpdatedBy" }, new[] { "I", txtCategoria.Text, Session["globalId"] }))
+                {
+                    if (reader.Read() && reader["ReturnValue"].ToString() == "-1")
+                    {
+                        Funciones.MostrarToast("Datos agregados exitosamente", "success", "top-0 end-0", 3000);
+                        LoadDropdownCategorias();
+                        LoadDropdownCategoria();
+                        txtCategoria.Text = string.Empty;
+                    }
+                    else if (reader["ReturnValue"].ToString() == "-800")
+                    {
+                        Funciones.MostrarToast(reader["Message"].ToString(), "danger", "top-0 end-0", 3000);
+                    }
+                    else
+                    {
+                        Funciones.MostrarToast("Error al guardar los datos", "danger", "top-0 end-0", 3000);
+                    }
+
+                    }
+            }
+            catch (Exception ex)
+            { 
+                Funciones.MostrarToast("Error al guardar los datos: " + ex.Message, "danger", "top-0 end-0", 3000);
+            }
+
+            }
+
+
+        protected void btnEditCategory_Click(object sender, EventArgs e)
+        {
+        
+            if(txtCategoria.Text == "")
+            {
+                Funciones.MostrarToast("Ingrese el nombre de la categoria", "danger", "top-0 end-0", 3000);
+                return;
+            }
+            else if (ddlCategorias.SelectedValue == "0")
+            {
+                Funciones.MostrarToast("Para actualizar una categoria debe seleccionar una", "danger", "top-0 end-0", 3000);
+                return;
+            }
+
+
+            using (SqlDataReader reader = Funciones.ExecuteReader("[dbo].[SP_IndirectMaterials_Category]", new[] { "@TransactionCode", "@CategoryName", "@UpdatedBy", "@CategoryId " }, new[] {"U", txtCategoria.Text, Session["globalId"], ddlCategorias.SelectedValue }  ))
+            {
+
+                if (reader.Read() && reader["ReturnValue"].ToString() == "-1")
+                {
+                    Funciones.MostrarToast("Datos Actulizados exitosamente", "success", "top-0 end-0", 3000);
+                    LoadDropdownCategorias();
+                    LoadDropdownCategoria();
+                    txtCategoria.Text = string.Empty;
+                }
+                else if (reader["ReturnValue"].ToString() == "-800")
+                {
+                    Funciones.MostrarToast(reader["Message"].ToString(), "danger", "top-0 end-0", 3000);
+                }
+                else
+                {
+                    Funciones.MostrarToast("Error al guardar los datos", "danger", "top-0 end-0", 3000);
+                }
+
+            }
+        }
+
+        protected void btnDeleteCategory_Click(Object sender, EventArgs e) 
+        { 
+
+            if(txtCategoria.Text == "")
+            {
+                Funciones.MostrarToast("Ingrese el nombre de la categoria", "danger", "top-0 end-0", 3000);
+                return;
+            }
+            else if (ddlCategorias.SelectedValue == "0")
+            {
+                Funciones.MostrarToast("Para eliminar una categoria debe seleccionar una", "danger", "top-0 end-0", 3000);
+                return;
+            }
+
+            using (SqlDataReader reader = Funciones.ExecuteReader("[dbo].[SP_IndirectMaterials_Category]", new[] { "@TransactionCode", "@CategoryId" }, new[] {"D",ddlCategorias.SelectedValue} ))
+            {
+
+                if (reader.Read() && reader["ReturnValue"].ToString() == "-1") 
+                { 
+                    Funciones.MostrarToast("Datos eliminados exitosamente", "success", "top-0 end-0", 3000);
+                    LoadDropdownCategorias();
+                    LoadDropdownCategoria();
+                    txtCategoria.Text = string.Empty;
+                }
+
+
+            }
+
+
+
+        }
+
+
+
+        }//END
 }

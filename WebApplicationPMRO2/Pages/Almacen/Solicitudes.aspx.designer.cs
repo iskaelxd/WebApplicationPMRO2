@@ -238,5 +238,23 @@ namespace WebApplicationPMRO2.Pages.Almacen
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hdnOrderId;
+
+        /// <summary>
+        /// btnSignalRListRefresh control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnSignalRListRefresh;
+
+        /// <summary>
+        /// btnSignalRDetailRefresh control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnSignalRDetailRefresh;
     }
 }

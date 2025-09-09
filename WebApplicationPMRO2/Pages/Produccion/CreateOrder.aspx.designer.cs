@@ -400,5 +400,14 @@ namespace WebApplicationPMRO2.Pages.Produccion
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.GridView tblorderDetails;
+
+        /// <summary>
+        /// btnAutoListRefresh control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnAutoListRefresh;
     }
 }

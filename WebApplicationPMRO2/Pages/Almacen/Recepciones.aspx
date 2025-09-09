@@ -15,6 +15,12 @@
   <li class="nav-item" role="presentation">
     <button class="nav-link" id="disabled-tab" data-bs-toggle="tab" data-bs-target="#disabled-tab-pane" type="button" role="tab" aria-controls="disabled-tab-pane" aria-selected="false" > Locaciones </button>
   </li>
+
+ <li class="nav-item" role="presentation">
+    <button class="nav-link" id="pills-disabled-tab" data-bs-toggle="pill" data-bs-target="#pills-disabled" type="button" role="tab" aria-controls="pills-disabled" aria-selected="false" >Categorias</button>
+  </li>
+
+
 </ul>
 <div class="tab-content" id="myTabContent">
   <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
@@ -179,6 +185,57 @@
 </asp:UpdatePanel>
 
   </div>
+
+
+   <div class="tab-pane fade" id="pills-disabled" role="tabpanel" aria-labelledby="pills-disabled-tab" tabindex="0">
+
+         <asp:UpdatePanel ID="UpdatePanel3" runat="server" UpdateMode="Conditional">
+<ContentTemplate>
+
+        <h2>Categoria</h2>
+
+
+       <div class="row mt-5">
+
+           <div class="col-4">
+
+               <label>Ingrese una Categoria</label>
+               <asp:TextBox ID="txtCategoria" runat="server" CssClass="form-control" placeholder="Categoria"></asp:TextBox>
+
+           </div>
+
+           <div class="col-4">
+
+               <label>Selecciona una categoria</label>
+               <asp:DropDownList  ID="ddlCategorias" runat="server" CssClass="form-select" OnSelectedIndexChanged="ddlCategorias_SelectedIndexChanged" AutoPostBack="true">
+               </asp:DropDownList>
+
+           </div>
+
+       </div>
+
+
+    <div class="row mt-4">
+
+        <div class="col-auto">
+            <asp:Button  runat="server" Text="Guardar Categoria" CssClass="btn btn-success" OnClick="btnGuardarCategoria_Click"  />
+        </div>
+
+         <div class="col-auto">
+             <asp:Button  runat="server" Text="Editar Categoria" CssClass="btn btn-primary" Onclick="btnEditCategory_Click" />
+         </div>
+         <div class="col-auto">
+             <asp:Button  runat="server" Text="Eliminar Categoria" CssClass="btn btn-danger" Onclick="btnDeleteCategory_Click"/>
+            </div>
+
+    </div>
+    </ContentTemplate>
+</asp:UpdatePanel>
+    </div>
+
+
+
+
   <div class="tab-pane fade" id="disabled-tab-pane" role="tabpanel" aria-labelledby="disabled-tab" tabindex="0">
 
       <asp:UpdatePanel ID="UpdatePanel2" runat="server" UpdateMode="Conditional">
@@ -219,17 +276,18 @@
 
       </div>
 
-
-
-
-
   </div>
 
         </ContentTemplate>
 </asp:UpdatePanel>
 
 </div>
+  
 
+
+
+
+    </div>
 
 </asp:Content>
 

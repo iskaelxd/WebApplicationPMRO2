@@ -68,7 +68,7 @@ namespace WebApplicationPMRO2.Pages.Produccion
                 string statusId = ddlStatus.SelectedValue == "0" ? null : ddlStatus.SelectedValue;
 
 
-                using (SqlDataReader reader = FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_OrderHeader]", new[] { "@TransactionCode", "@globalId", "@AreaId", "@LineId", "@StatusId" }, new[] { "S", Session["globalId"].ToString(), areaId, lineId, statusId }))
+                using (SqlDataReader reader = Funciones.ExecuteReader("[dbo].[SP_IndirectMaterials_OrderHeader]", new[] { "@TransactionCode", "@globalId", "@AreaId", "@LineId", "@StatusId" }, new[] { "S", Session["globalId"].ToString(), areaId, lineId, statusId }))
                 {
                     if (reader == null)
                     {
@@ -189,7 +189,7 @@ namespace WebApplicationPMRO2.Pages.Produccion
                 string orderId = hfIdorder.Value;
                 string StatusId = string.Empty;
 
-                using (SqlDataReader reader = FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_OrderHeader]", new[] { "@TransactionCode", "@OrderHeaderId" }, new[] { "S", orderId }))
+                using (SqlDataReader reader = Funciones.ExecuteReader("[dbo].[SP_IndirectMaterials_OrderHeader]", new[] { "@TransactionCode", "@OrderHeaderId" }, new[] { "S", orderId }))
                 {
                     if (reader.Read())
                     {
@@ -200,7 +200,7 @@ namespace WebApplicationPMRO2.Pages.Produccion
                 if (StatusId == "6")
                 {
                     // Aquí puedes agregar la lógica para eliminar la orden de la base de datos
-                    FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_OrderHeader]", new[] { "@TransactionCode", "@OrderHeaderId", "@StatusId " }, new[] { "U", orderId, "7" });
+                    Funciones.ExecuteReader("[dbo].[SP_IndirectMaterials_OrderHeader]", new[] { "@TransactionCode", "@OrderHeaderId", "@StatusId " }, new[] { "U", orderId, "7" });
                     Funciones.MostrarToast("Orden eliminada exitosamente.", "success", "top-0 end-0", 3000);
                     LoadData(); // Recargar la lista de órdenes después de eliminar
                     ScriptManager.RegisterStartupScript(this, GetType(), "ocultarModal", @"
@@ -210,7 +210,7 @@ namespace WebApplicationPMRO2.Pages.Produccion
                 }
                 else
                 {
-                    FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_OrderHeader]", new[] { "@TransactionCode", "@OrderHeaderId" }, new[] { "D", orderId });
+                    Funciones.ExecuteReader("[dbo].[SP_IndirectMaterials_OrderHeader]", new[] { "@TransactionCode", "@OrderHeaderId" }, new[] { "D", orderId });
                     Funciones.MostrarToast("Orden eliminada exitosamente.", "success", "top-0 end-0", 3000);
                     LoadData(); // Recargar la lista de órdenes después de eliminar
                     ScriptManager.RegisterStartupScript(this, GetType(), "ocultarModal", @"
@@ -238,7 +238,7 @@ namespace WebApplicationPMRO2.Pages.Produccion
                 dt.Columns.Add("OrderQnty", typeof(int));
                 dt.Columns.Add("UM", typeof(string));
                 dt.Columns.Add("Marcado", typeof(bool));
-                using (SqlDataReader reader = FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_OrderDetail]", new[] { "@TransactionCode", "@OrderHeaderId" }, new[] { "S", orderId }))
+                using (SqlDataReader reader = Funciones.ExecuteReader("[dbo].[SP_IndirectMaterials_OrderDetail]", new[] { "@TransactionCode", "@OrderHeaderId" }, new[] { "S", orderId }))
                 {
                     if (reader == null)
                     {
@@ -336,7 +336,7 @@ namespace WebApplicationPMRO2.Pages.Produccion
 
         private void LoadDropdownArea()
         {
-            FuncionesMes.LlenarDropDownList(
+            Funciones.LlenarDropDownList(
                 ddlArea,
                 "[dbo].[SP_IndirectMaterials_Area]",
                 new[] { "@TransactionCode" },
@@ -352,7 +352,7 @@ namespace WebApplicationPMRO2.Pages.Produccion
 
         private void LoadDropdownAreaS()
         {
-            FuncionesMes.LlenarDropDownList(
+            Funciones.LlenarDropDownList(
                 ddlAreaS,
                 "[dbo].[SP_IndirectMaterials_Area]",
                 new[] { "@TransactionCode" },
@@ -367,7 +367,7 @@ namespace WebApplicationPMRO2.Pages.Produccion
 
         private void LoadDropdownStatus()
         {
-            FuncionesMes.LlenarDropDownList(
+            Funciones.LlenarDropDownList(
                 ddlStatus,
                 "[dbo].[SP_IndirectMaterials_Status]",
                 new[] { "@TransactionCode" },
@@ -381,7 +381,7 @@ namespace WebApplicationPMRO2.Pages.Produccion
 
         private void LoadDropdownLinea()
         {
-            FuncionesMes.LlenarDropDownList(
+            Funciones.LlenarDropDownList(
                 ddlLinea,
                 "[dbo].[SP_IndirectMaterials_Line]",
                 new[] { "@TransactionCode" },
@@ -395,7 +395,7 @@ namespace WebApplicationPMRO2.Pages.Produccion
 
         private void LoadDropdownLineaS()
         {
-            FuncionesMes.LlenarDropDownList(
+            Funciones.LlenarDropDownList(
                 ddlLineaS,
                 "[dbo].[SP_IndirectMaterials_Line]",
                 new[] { "@TransactionCode" },
@@ -410,7 +410,7 @@ namespace WebApplicationPMRO2.Pages.Produccion
 
         private void LoadDropdownCategorias()
         {
-            FuncionesMes.LlenarDropDownList(
+            Funciones.LlenarDropDownList(
                 ddlCategorias,
                 "[dbo].[SP_IndirectMaterials_Category]",
                 new[] { "@TransactionCode" },
@@ -493,7 +493,7 @@ namespace WebApplicationPMRO2.Pages.Produccion
 
                 //validar que exista suficiente inventario y que el numero de parte exista
 
-                using (SqlDataReader reader = FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_Products]", new[] { "PartNumb", "@TransactionCode" }, new[] { txtNumberPart.Text, "S" }))
+                using (SqlDataReader reader = Funciones.ExecuteReader("[dbo].[SP_IndirectMaterials_Products]", new[] { "PartNumb", "@TransactionCode" }, new[] { txtNumberPart.Text, "S" }))
                 {
                     if (reader.Read())
                     {
@@ -625,7 +625,7 @@ namespace WebApplicationPMRO2.Pages.Produccion
             }
 
             // Validar inventario desde la base de datos
-            using (SqlDataReader reader = FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_Products]", new[] { "PartNumb", "@TransactionCode" }, new[] { partNumber, "S" }))
+            using (SqlDataReader reader = Funciones.ExecuteReader("[dbo].[SP_IndirectMaterials_Products]", new[] { "PartNumb", "@TransactionCode" }, new[] { partNumber, "S" }))
             {
                 if (reader.Read())
                 {
@@ -681,7 +681,7 @@ namespace WebApplicationPMRO2.Pages.Produccion
                 }
 
                 //Insetar orden en la base de datos
-                using (SqlDataReader reader = FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_OrderHeader]", new[] { "@TransactionCode", "@AreaId", "@LineId", "@StatusId", "@UpdatedBy", "@Correo", "@globalId" },
+                using (SqlDataReader reader = Funciones.ExecuteReader("[dbo].[SP_IndirectMaterials_OrderHeader]", new[] { "@TransactionCode", "@AreaId", "@LineId", "@StatusId", "@UpdatedBy", "@Correo", "@globalId" },
                     new[] { "I", ddlAreaS.SelectedValue.ToString(), lineas, "1", Session["Username"], Session["Correo"], Session["globalId"] }))
                 {
 
@@ -714,7 +714,7 @@ namespace WebApplicationPMRO2.Pages.Produccion
                 // Insertar cada indirecto en la base de datos
                 foreach (var item in listaIndirectos)
                 {
-                    FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_OrderDetail]",
+                    Funciones.ExecuteReader("[dbo].[SP_IndirectMaterials_OrderDetail]",
                         new[] { "@TransactionCode", "@OrderHeaderId", "@PartNumb", "@OrderQnty", "@UpdatedBy", "@PrLocation", "@Price", "@PartDescription", "@UM" },
                         new[] { "I", Id, item.PartNumber, item.OrderQnty, Session["globalId"].ToString(), item.PrLocation, item.Price, item.ProductDescription, item.UM });
                 }
@@ -731,7 +731,13 @@ namespace WebApplicationPMRO2.Pages.Produccion
                 ddlAreaS.Enabled = true;
                 ddlLineaS.Enabled = true;
                 lineaS.Visible = false; // Ocultar el dropdown de línea si no es necesario
+                ddlAreaS.SelectedIndex = 0; // Reiniciar el dropdown de área
+                ddlLineaS.SelectedIndex = 0; // Reiniciar el dropdown de línea
+                txtNumberPart.Text = string.Empty;
+                txtQnty.Text = string.Empty;
                 LoadData(); // Recargar la tabla de órdenes para mostrar la nueva orden creada
+
+
 
 
             }
@@ -842,7 +848,7 @@ namespace WebApplicationPMRO2.Pages.Produccion
                 pnames.Add("@CategoryId"); pvals.Add(catId.ToString());
             }
 
-            using (var r = FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_Products]",
+            using (var r = Funciones.ExecuteReader("[dbo].[SP_IndirectMaterials_Products]",
                 pnames.ToArray(), pvals.ToArray()))
             {
                 if (r.Read())
@@ -867,7 +873,7 @@ namespace WebApplicationPMRO2.Pages.Produccion
             }
 
             var productos = new List<dynamic>();
-            using (SqlDataReader reader = FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_Products]",
+            using (SqlDataReader reader = Funciones.ExecuteReader("[dbo].[SP_IndirectMaterials_Products]",
                 pnames2.ToArray(), pvals2.ToArray()))
             {
                 while (reader.Read())
@@ -1045,6 +1051,15 @@ namespace WebApplicationPMRO2.Pages.Produccion
             // 4) Fallback global
             return DEFAULT_IMG;
         }
+
+
+        protected void btnAutoListRefresh_Click(object sender, EventArgs e)
+        {
+            // Índices: 0 = vwViewOrders, 1 = vmCreateOrder, 2 = vwViewOrderDetails
+            if (mvCreateOrder.ActiveViewIndex == 0)
+                LoadData();
+        }
+
 
 
 

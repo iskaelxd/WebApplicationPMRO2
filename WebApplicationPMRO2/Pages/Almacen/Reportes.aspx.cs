@@ -5,7 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-
+using WebApplicationPMRO2.Utilities;
 namespace WebApplicationPMRO2.Pages.Almacen
 {
     public partial class Reportes : System.Web.UI.Page
@@ -30,7 +30,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
 
         private void LoadDropdownArea()
         {
-            FuncionesMes.LlenarDropDownList(
+            Funciones.LlenarDropDownList(
                 ddlArea,
                 "[dbo].[SP_IndirectMaterials_Area]",
                 new[] { "@TransactionCode" },
@@ -45,7 +45,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
 
         private void LoadDropdownStatus()
         {
-            FuncionesMes.LlenarDropDownList(
+            Funciones.LlenarDropDownList(
                 ddlStatus,
                 "[dbo].[SP_IndirectMaterials_Status]",
                 new[] { "@TransactionCode" },
@@ -59,7 +59,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
 
         private void LoadDropdownLinea()
         {
-            FuncionesMes.LlenarDropDownList(
+            Funciones.LlenarDropDownList(
                 ddlLinea,
                 "[dbo].[SP_IndirectMaterials_Line]",
                 new[] { "@TransactionCode" },
@@ -73,7 +73,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
 
         private void LoadDropdownSupervisor()
         {
-            FuncionesMes.LlenarDropDownList(
+            Funciones.LlenarDropDownList(
                 ddlSupervisor,
                 "[dbo].[SP_IndirectMaterials_User]",
                 new[] { "@TransactionCode", "@isAdmin" },

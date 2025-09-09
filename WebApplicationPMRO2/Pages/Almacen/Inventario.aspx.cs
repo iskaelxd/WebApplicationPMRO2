@@ -77,7 +77,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
 
         private void LoadDropdownLocacion()
         {
-            FuncionesMes.LlenarDropDownList(
+            Funciones.LlenarDropDownList(
                 ddlLocacion,
                 "[dbo].[SP_IndirectMaterials_Locacion]",
                 new[] { "@TransactionCode" },
@@ -92,7 +92,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
 
         private void LoadDropdownCategoria()
         {
-            FuncionesMes.LlenarDropDownList(
+            Funciones.LlenarDropDownList(
                 ddlCategoria,
                 "[dbo].[SP_IndirectMaterials_Category]",
                 new[] { "@TransactionCode" },
@@ -106,7 +106,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
 
         private void LoadDropdownStock()
         {
-            FuncionesMes.LlenarDropDownList(
+            Funciones.LlenarDropDownList(
                 ddlStock,
                 "[dbo].[SP_IndirectMaterials_Stock]",
                 new[] { "@TransactionCode" },
@@ -168,7 +168,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
             { pnames.Add("@SearchText"); pvals.Add(searchText); }
 
             int total = 1;
-            using (var r = FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_Products]",
+            using (var r = Funciones.ExecuteReader("[dbo].[SP_IndirectMaterials_Products]",
                 pnames.ToArray(), pvals.ToArray()))
             {
                 if (r.Read())
@@ -215,7 +215,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
             dt.Columns.Add("Stock", typeof(string));
             dt.Columns.Add("ProductId", typeof(int));
 
-            using (SqlDataReader reader = FuncionesMes.ExecuteReader(
+            using (SqlDataReader reader = Funciones.ExecuteReader(
                 "[dbo].[SP_IndirectMaterials_Products]", pnames.ToArray(), pvals.ToArray()))
             {
                 while (reader.Read())
@@ -333,7 +333,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
         // ====== Dropdowns para vista de edición ======
         private void LoadDropdownCategoriaEdit()
         {
-            FuncionesMes.LlenarDropDownList(
+            Funciones.LlenarDropDownList(
                 ddlCategoriaEdit,
                 "[dbo].[SP_IndirectMaterials_Category]",
                 new[] { "@TransactionCode" },
@@ -347,7 +347,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
 
         private void LoadDropdownLocacionEdit()
         {
-            FuncionesMes.LlenarDropDownList(
+            Funciones.LlenarDropDownList(
                 ddlLocacionEdit,
                 "[dbo].[SP_IndirectMaterials_Locacion]",
                 new[] { "@TransactionCode" },
@@ -417,7 +417,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
         private void CargarEdicion(int productId)
         {
             // Lee un producto por Id
-            using (var r = FuncionesMes.ExecuteReader(
+            using (var r = Funciones.ExecuteReader(
                 "[dbo].[SP_IndirectMaterials_Products]",
                 new[] { "@TransactionCode", "@ProductId" },
                 new[] { "S", productId.ToString() }))
@@ -504,7 +504,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
             // Ejecuta SP de actualización
             try
             {
-                using (var r = FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_Products]",
+                using (var r = Funciones.ExecuteReader("[dbo].[SP_IndirectMaterials_Products]",
                     pnames.ToArray(), pvals.ToArray()))
                 {
                     // Si usas SP_SelectReturnValue, puedes leer resultado si lo necesitas
@@ -565,7 +565,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
             try
             {
                 // Soft delete vía SP: TransactionCode = 'D'
-                using (var r = FuncionesMes.ExecuteReader(
+                using (var r = Funciones.ExecuteReader(
                     "[dbo].[SP_IndirectMaterials_Products]",
                     new[] { "@TransactionCode", "@ProductId" },
                     new[] { "D", productId.ToString() }))

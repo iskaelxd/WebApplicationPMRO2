@@ -11,17 +11,8 @@ namespace WebApplicationPMRO2.Pages.Almacen
 {
 
 
-    public partial class Movimientos
+    public partial class Seguimiento_Solicitud
     {
-
-        /// <summary>
-        /// UpdatePanel1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.UpdatePanel UpdatePanel1;
 
         /// <summary>
         /// txtPartNumb control.
@@ -30,7 +21,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtPartNumb;
+        protected global::System.Web.UI.HtmlControls.HtmlInputText txtPartNumb;
 
         /// <summary>
         /// btnBuscar control.
@@ -42,12 +33,12 @@ namespace WebApplicationPMRO2.Pages.Almacen
         protected global::System.Web.UI.WebControls.Button btnBuscar;
 
         /// <summary>
-        /// gvPartes control.
+        /// tblSolicitudes control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvPartes;
+        protected global::System.Web.UI.WebControls.GridView tblSolicitudes;
     }
 }

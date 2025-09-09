@@ -4,7 +4,7 @@
 
 
     <style>
-.card-img-top {
+        .card-img-top {
     width: 100%;
     height: 200px;
     object-fit: contain;
@@ -13,7 +13,7 @@
 }
 
 
-.card {
+        .card {
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     transition: transform 0.2s ease-in-out;
     border-radius: 10px;
@@ -423,50 +423,117 @@
 
 
 </asp:MultiView>
+
+      <asp:Button ID="btnAutoListRefresh" runat="server"
+    Style="display:none"
+    UseSubmitBehavior="false" CausesValidation="false"
+    OnClick="btnAutoListRefresh_Click" />
+
+
+
+          <script>
+              (function () {
+                  // Limpia backdrops y estado del body
+                  function cleanupBackdrops() {
+                      document.body.classList.remove('modal-open');
+                      document.body.style.removeProperty('padding-right');
+                      document.querySelectorAll('.modal-backdrop')
+                          .forEach(el => el.parentNode && el.parentNode.removeChild(el));
+                  }
+
+                  // Re-vincula eventos del modal (por si el UpdatePanel re-renderizó)
+                  function wireModal() {
+                      var el = document.getElementById('catalogModal');
+                      if (!el || !window.bootstrap) return;
+                      el.removeEventListener('hidden.bs.modal', cleanupBackdrops);
+                      el.addEventListener('hidden.bs.modal', cleanupBackdrops);
+                  }
+
+                  // Exponer helpers para usarlos desde server-side
+                  window.__catalog_cleanup = cleanupBackdrops;
+                  window.__catalog_wire = wireModal;
+
+                  // Al cargar
+                  document.addEventListener('DOMContentLoaded', function () {
+                      wireModal();
+                  });
+
+                  // Después de cada postback parcial de ASP.NET AJAX
+                  if (window.Sys && Sys.WebForms && Sys.WebForms.PageRequestManager) {
+                      var prm = Sys.WebForms.PageRequestManager.getInstance();
+                      prm.add_endRequest(function () {
+                          // El contenido dentro de UpdatePanel puede haber cambiado
+                          wireModal();
+                          // Por si quedó una backdrop previa al re-render
+                          cleanupBackdrops();
+                      });
+                  }
+              })();
+
+
+              (function () {
+                  var POLL_MS = 8000; // <- ajusta el intervalo a tu gusto
+                  var timer = null;
+                  var pausedReasons = new Set();
+
+                  // Postback directo al botón oculto
+                  var LIST_UNIQUE_ID = '<%= btnAutoListRefresh.UniqueID %>';
+
+  // Heurísticas de estado en cliente
+  function modalOpen() { return !!document.querySelector('.modal.show'); }
+            function inOrdersView() { return !!document.getElementById('<%= tblorder.ClientID %>'); }
+
+                  // ¿Podemos lanzar refresh ahora?
+                  function canPollList() {
+                      return inOrdersView() && !modalOpen() && pausedReasons.size === 0;
+                  }
+
+                  function tick() {
+                      if (canPollList() && typeof __doPostBack === 'function') {
+                          __doPostBack(LIST_UNIQUE_ID, '');
+                      }
+                  }
+
+                  function start() { stop(); timer = setInterval(tick, POLL_MS); }
+                  function stop() { if (timer) { clearInterval(timer); timer = null; } }
+
+                  // Pausar durante postbacks parciales; reanudar al terminar
+                  if (window.Sys && Sys.WebForms && Sys.WebForms.PageRequestManager) {
+                      var prm = Sys.WebForms.PageRequestManager.getInstance();
+                      prm.add_beginRequest(function () { pausedReasons.add('postback'); });
+                      prm.add_endRequest(function () { pausedReasons.delete('postback'); start(); });
+                  }
+
+                  // Pausar mientras el catálogo esté abierto (si usas Bootstrap 5)
+                  document.addEventListener('DOMContentLoaded', function () {
+                      // Reacciona a la apertura/cierre de cualquier modal
+                      document.body.addEventListener('shown.bs.modal', function () { pausedReasons.add('modal'); });
+                      document.body.addEventListener('hidden.bs.modal', function () { pausedReasons.delete('modal'); });
+
+                      // Arranca el polling
+                      start();
+                  });
+
+                  // API opcional por si quieres pausar desde consola
+                  window.ordersPolling = {
+                      pause: function (r) { pausedReasons.add(r || 'manual'); },
+                      resume: function (r) { if (r) pausedReasons.delete(r); else pausedReasons.clear(); },
+                      start: start,
+                      stop: stop
+                  };
+              })();
+
+
+
+          </script>
+
+
              </ContentTemplate>
 
 </asp:UpdatePanel>
 
 
-    <script>
-        (function () {
-            // Limpia backdrops y estado del body
-            function cleanupBackdrops() {
-                document.body.classList.remove('modal-open');
-                document.body.style.removeProperty('padding-right');
-                document.querySelectorAll('.modal-backdrop')
-                    .forEach(el => el.parentNode && el.parentNode.removeChild(el));
-            }
 
-            // Re-vincula eventos del modal (por si el UpdatePanel re-renderizó)
-            function wireModal() {
-                var el = document.getElementById('catalogModal');
-                if (!el || !window.bootstrap) return;
-                el.removeEventListener('hidden.bs.modal', cleanupBackdrops);
-                el.addEventListener('hidden.bs.modal', cleanupBackdrops);
-            }
-
-            // Exponer helpers para usarlos desde server-side
-            window.__catalog_cleanup = cleanupBackdrops;
-            window.__catalog_wire = wireModal;
-
-            // Al cargar
-            document.addEventListener('DOMContentLoaded', function () {
-                wireModal();
-            });
-
-            // Después de cada postback parcial de ASP.NET AJAX
-            if (window.Sys && Sys.WebForms && Sys.WebForms.PageRequestManager) {
-                var prm = Sys.WebForms.PageRequestManager.getInstance();
-                prm.add_endRequest(function () {
-                    // El contenido dentro de UpdatePanel puede haber cambiado
-                    wireModal();
-                    // Por si quedó una backdrop previa al re-render
-                    cleanupBackdrops();
-                });
-            }
-        })();
-    </script>
 
 
 

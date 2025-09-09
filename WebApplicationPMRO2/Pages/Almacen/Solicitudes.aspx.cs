@@ -32,7 +32,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
 
         private void LoadDropdownArea()
         {
-            FuncionesMes.LlenarDropDownList(
+            Funciones.LlenarDropDownList(
                 ddlArea,
                 "[dbo].[SP_IndirectMaterials_Area]",
                 new[] { "@TransactionCode" },
@@ -47,7 +47,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
 
         private void LoadDropdownStatus()
         {
-            FuncionesMes.LlenarDropDownList(
+            Funciones.LlenarDropDownList(
                 ddlStatus,
                 "[dbo].[SP_IndirectMaterials_Status]",
                 new[] { "@TransactionCode" },
@@ -61,7 +61,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
 
         private void LoadDropdownLinea()
         {
-            FuncionesMes.LlenarDropDownList(
+            Funciones.LlenarDropDownList(
                 ddlLinea,
                 "[dbo].[SP_IndirectMaterials_Line]",
                 new[] { "@TransactionCode" },
@@ -86,6 +86,23 @@ namespace WebApplicationPMRO2.Pages.Almacen
             }
             LoadData(); // Recargar la tabla de órdenes al cambiar el área
         }
+
+
+        protected void btnSignalRListRefresh_Click(object sender, EventArgs e)
+        {
+            // Simplemente recarga el grid con tus filtros actuales
+            LoadData();
+        }
+
+        protected void btnSignalRDetailRefresh_Click(object sender, EventArgs e)
+        {
+            if (int.TryParse(hdnOrderId.Value, out var oid))
+            {
+                CargarEncabezado(oid);
+                CargarDetalle(oid);
+            }
+        }
+
 
 
         protected void btnBuscar_Click(object sender, EventArgs e)
@@ -118,7 +135,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
                 var paramNames = new List<string> { "@TransactionCode", "@AreaId", "@LineId", "@StatusId", "@Search" };
                 var paramValues = new List<string> { "O", areaId, lineId, statusId, raw };
 
-                using (SqlDataReader reader = FuncionesMes.ExecuteReader(
+                using (SqlDataReader reader = Funciones.ExecuteReader(
                     "[dbo].[SP_IndirectMaterials_OrderHeader]",
                     paramNames.ToArray(),
                     paramValues.ToArray()))
@@ -221,7 +238,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
             {
                 string status = null;
 
-                using (SqlDataReader reader = FuncionesMes.ExecuteReader(
+                using (SqlDataReader reader = Funciones.ExecuteReader(
                     "[dbo].[SP_IndirectMaterials_OrderHeader]",
                     new[] { "@TransactionCode", "@OrderHeaderId" },
                     new[] { "O", orderId.ToString() }))
@@ -249,7 +266,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
 
                 if (status == "1")
                 {
-                    using (SqlDataReader reader = FuncionesMes.ExecuteReader(
+                    using (SqlDataReader reader = Funciones.ExecuteReader(
                    "[dbo].[SP_IndirectMaterials_OrderHeader]",
                    new[] { "@TransactionCode", "@OrderHeaderId", "@StatusId" },
                    new[] { "U", orderId.ToString(), "3" })) { }
@@ -298,22 +315,19 @@ namespace WebApplicationPMRO2.Pages.Almacen
 
                 // Aquí puedes implementar la lógica para entregar la orden
                 // Por ejemplo, cambiar el estado de la orden a "Entregado"
-                using (FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_OrderHeader]",
+                using (Funciones.ExecuteReader("[dbo].[SP_IndirectMaterials_OrderHeader]",
                     new[] { "@TransactionCode", "@OrderHeaderId", "@StatusId" },
                     new[] { "U", hdnOrderId.Value, "4" })) { }
 
 
-                using (FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_OrderHeader]",
+                using (Funciones.ExecuteReader("[dbo].[SP_IndirectMaterials_OrderHeader]",
                     new[] { "@TransactionCode", "@OrderHeaderId" },
                     new[] { "D", hdnOrderId.Value }))
                 {
                     Funciones.MostrarToast("Orden entregada correctamente.", "success", "top-0 end-0", 3000);
                     LoadData(); // Recargar la lista de órdenes
                     MostrarListado(); // Volver a la vista de listado
-                    
                 }
-
-               
 
             }
             catch (Exception ex)
@@ -341,7 +355,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
                 dt.Columns.Add("Habilitado", typeof(bool));      // <-- NUEVO (para Enable del checkbox)
                 dt.Columns.Add("RowCss", typeof(string));        // <-- NUEVO (pintar fila)
 
-                using (SqlDataReader reader = FuncionesMes.ExecuteReader(
+                using (SqlDataReader reader = Funciones.ExecuteReader(
                     "[dbo].[SP_IndirectMaterials_OrderDetail]",
                     new[] { "@TransactionCode", "@OrderHeaderId" },
                     new[] { "S", orderId.ToString() }))
@@ -468,7 +482,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
                     int Inventory = Convert.ToInt32(Disponible) + Convert.ToInt32(Qnty);
 
 
-                    using (SqlDataReader reader = FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_Products]",
+                    using (SqlDataReader reader = Funciones.ExecuteReader("[dbo].[SP_IndirectMaterials_Products]",
                          new[] { "@TransactionCode", "@PartNumb", "@Inventory" },
                          new[] { "U", dr["PartNumb"].ToString(), Inventory.ToString() }))
                     { }
@@ -483,7 +497,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
                 return; // Salir si hay un error
             }
 
-            using (SqlDataReader reader = FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_OrderDetail]",
+            using (SqlDataReader reader = Funciones.ExecuteReader("[dbo].[SP_IndirectMaterials_OrderDetail]",
             new[] { "@TransactionCode", "@OrderHeaderId" },
             new[] { "D", hdnOrderId.Value }))
             {
@@ -491,7 +505,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
 
             }
 
-            using (SqlDataReader reader = FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_OrderHeader]",
+            using (SqlDataReader reader = Funciones.ExecuteReader("[dbo].[SP_IndirectMaterials_OrderHeader]",
                 new[] { "@TransactionCode", "@OrderHeaderId" },
                 new[] { "D", hdnOrderId.Value, }))
             {
@@ -540,7 +554,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
             try
             {
 
-                using (SqlDataReader reader = FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_OrderDetail]",
+                using (SqlDataReader reader = Funciones.ExecuteReader("[dbo].[SP_IndirectMaterials_OrderDetail]",
                          new[] { "@TransactionCode", "@OrderHeaderId" },
                          new[] { "S", hdnOrderId.Value }))
                 {
@@ -589,7 +603,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
                     int Inventory = Convert.ToInt32(Disponible) - Convert.ToInt32(Qnty);
 
 
-                    using (SqlDataReader reader = FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_Products]",
+                    using (SqlDataReader reader = Funciones.ExecuteReader("[dbo].[SP_IndirectMaterials_Products]",
                          new[] { "@TransactionCode", "@PartNumb", "@Inventory" },
                          new[] { "U", dr["PartNumb"].ToString(), Inventory.ToString() }))
                     { }
@@ -599,7 +613,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
 
 
                 // Marcar la orden como "Listo para recoger" (StatusId = 3)
-                using (SqlDataReader reader = FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_OrderHeader]",
+                using (SqlDataReader reader = Funciones.ExecuteReader("[dbo].[SP_IndirectMaterials_OrderHeader]",
                       new[] { "@TransactionCode", "@OrderHeaderId", "@StatusId" },
                       new[] { "U", hdnOrderId.Value, "6" }))
                 {
@@ -617,14 +631,12 @@ namespace WebApplicationPMRO2.Pages.Almacen
                                                     // CargarEncabezado(int.Parse(hdnOrderId.Value)); // Recargar encabezado para reflejar cambios
                         CargarDetalle(int.Parse(hdnOrderId.Value)); // Recargar detalles para reflejar cambios
 
-
+                        SendMail(hdnOrderId.Value, "6");
 
                     }
 
                 }
 
-
-                SendMail(hdnOrderId.Value, "6");
                 //Funciones.MostrarToast($"Orden marcada como Listo para recoger", "success", "top-0 end-0", 2000);
 
             }
@@ -642,8 +654,10 @@ namespace WebApplicationPMRO2.Pages.Almacen
         {
             try
             {
+                
+
                 // TODO: sustituye "X_NO_STOCK" por el StatusId / StatusCode real
-                FuncionesMes.ExecuteReader("[dbo].[SP_IndirectMaterials_OrderHeader]",
+                Funciones.ExecuteReader("[dbo].[SP_IndirectMaterials_OrderHeader]",
                     new[] { "@TransactionCode", "@OrderHeaderId", "@StatusId" },
                     new[] { "U", hdnOrderId.Value, "5" });
 
@@ -656,7 +670,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
 
                 gvDetalle.Enabled = false; // Deshabilitar la grilla para evitar cambios
                 CargarDetalle(int.Parse(hdnOrderId.Value));
-                SendMail(hdnOrderId.Value,"5");
+                SendMail(hdnOrderId.Value, "5");
             }
             catch (Exception ex)
             {
@@ -690,7 +704,7 @@ namespace WebApplicationPMRO2.Pages.Almacen
 
                     // Llama a tu SP de detalle en modo Update
                     // Ajusta si tu helper requiere tipos distintos; aquí asumo ExecuteNonQuery con pares nombre/valor:
-                    FuncionesMes.ExecuteReader(
+                    Funciones.ExecuteReader(
                         "[dbo].[SP_IndirectMaterials_OrderDetail]",
                         new[] { "@TransactionCode", "@OrderDetailId", "@Marcado", "@UpdatedOn", "@UpdatedBy" },
                         new[] { "U", orderDetailId.ToString(), marcado, DateTime.Now.ToString("s"), usuario }
@@ -709,7 +723,6 @@ namespace WebApplicationPMRO2.Pages.Almacen
                 Funciones.MostrarToast($"Error al guardar selección: {ex.Message}", "danger", "top-0 end-0", 3000);
             }
         }
-
         //CORREO
 
         protected void SendMail(string OrderId, string status)
@@ -725,12 +738,12 @@ namespace WebApplicationPMRO2.Pages.Almacen
             else if (status == "4")
                 estate = "ENTREGADO";
 
-            using (SqlDataReader reader = FuncionesMes.ExecuteReader(
+            using (SqlDataReader reader = Funciones.ExecuteReader(
                 "[dbo].[SP_IndirectMaterials_OrderHeader]",
                 new[] { "@TransactionCode", "@OrderHeaderId" },
                 new[] { "S", OrderId.ToString() }))
             {
-                if (reader != null && reader.Read())
+                if (reader.Read())
                 {
                     email = reader["Correo"].ToString();
                     nombre = reader["UpdatedBy"].ToString();
@@ -812,8 +825,6 @@ namespace WebApplicationPMRO2.Pages.Almacen
 
 
         //END CORREO
-
-
 
 
     }//end
